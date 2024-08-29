@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:luna/providers/diary_editor_provider.dart';
 import 'package:luna/screens/diary/components/toolbar/custom_quill_toolbar.dart';
 import 'package:luna/screens/diary/components/toolbar/font_options_container.dart';
+import 'package:luna/screens/diary/components/toolbar/images_options_container.dart';
 import 'package:luna/screens/diary/components/toolbar/color_options_container.dart'; 
 import 'package:luna/screens/diary/components/toolbar/emoji_picker.dart';
 
@@ -23,7 +24,7 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 300),
     );
 
     _slideAnimation = Tween<Offset>(
@@ -50,8 +51,8 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
       create: (_) => DiaryEditorProvider(),
       child: Consumer<DiaryEditorProvider>(
         builder: (context, provider, child) {
-          if (provider.isFontSelected || provider.isColorSelected || provider.isEmojiSelected) {
-            _animationController.forward();
+          if (provider.isFontSelected || provider.isColorSelected || provider.isEmojiSelected || provider.isImageSelected) {
+          _animationController.forward();
           } else {
             _animationController.reverse();
           }
@@ -59,7 +60,7 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
             children: [
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+                  padding: const EdgeInsets.only(top: 5, left: 20, right: 20),
                   child: QuillEditor.basic(
                     focusNode: provider.diaryFocusNode,
                     controller: provider.controller,
@@ -79,7 +80,7 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
                         TextStyle(
                           fontSize: 16, 
                           height: 1.5, 
-                          wordSpacing: 1.25, 
+                          wordSpacing: 1, 
                           color: theme.brightness == Brightness.dark ? 
                           Colors.white : Colors.black
                         ), 
@@ -104,8 +105,8 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
 
   Widget _buildAnimatedOptions(DiaryEditorProvider provider) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 100),
-      height: provider.isFontSelected || provider.isColorSelected || provider.isEmojiSelected ? 250 : 0,
+      duration: const Duration(milliseconds: 300),
+      height: provider.isFontSelected || provider.isColorSelected || provider.isEmojiSelected|| provider.isImageSelected ? 250 : 0,
       child: SlideTransition(
         position: _slideAnimation,
         child: SingleChildScrollView(
@@ -113,6 +114,7 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
             children: [
               if (provider.isFontSelected) const FontOptionsContainer(),
               if (provider.isColorSelected) const ColorOptionsContainer(),
+              if (provider.isImageSelected) const ImageOptionsContainer(), 
               if (provider.isEmojiSelected)
                 EmojiPickerWidget(onEmojiSelected: provider.insertEmoji),
             ],

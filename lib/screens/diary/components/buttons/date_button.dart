@@ -26,10 +26,10 @@ class DateButton extends StatelessWidget {
     return GestureDetector(
       onTap: () => _showDatePicker(context),
       child: Padding(
-        padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0, bottom: 2.0),
+        padding: const EdgeInsets.only(left: 15.0, right: 20.0, top: 10.0, bottom: 5),
         child: Row(
           children: [
-            const Icon(Icons.event, size: 26, color: Colors.grey),
+            const Icon(Icons.event_note_rounded, size: 23, color: Color(0xFFBDBDBD)),
             const SizedBox(width: 8),
             Text(
               formatDate(selectedDate),

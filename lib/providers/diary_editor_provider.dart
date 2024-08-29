@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:image_picker/image_picker.dart';
 
 class DiaryEditorProvider extends ChangeNotifier {
   late QuillController _controller;
@@ -11,6 +12,10 @@ class DiaryEditorProvider extends ChangeNotifier {
   bool _isUnderlineSelected = false;
   bool _isEmojiSelected = false;  
   bool _isColorSelected = false;
+  bool _isImageSelected = false;
+  XFile? _selectedImage;
+  List<XFile> _selectedImages = [];
+  List<XFile> get selectedImages => _selectedImages;
   String _selectedFontFamily = "Nunito"; 
   String _selectedColor = '#000000';
 
@@ -28,8 +33,10 @@ class DiaryEditorProvider extends ChangeNotifier {
   bool get isUnderline => _isUnderlineSelected;
   bool get isEmojiSelected => _isEmojiSelected;
   bool get isColorSelected => _isColorSelected;
+  bool get isImageSelected => _isImageSelected; 
   String get selectedColor => _selectedColor;
   String get selectedFontFamily => _selectedFontFamily;
+  XFile? get selectedImage => _selectedImage;
 
   void _onFocusChange() {
     if (_diaryFocusNode.hasFocus) {
@@ -37,6 +44,7 @@ class DiaryEditorProvider extends ChangeNotifier {
       _isFontSelected = false;
       _isEmojiSelected = false;
       _isColorSelected = false;
+      _isImageSelected = false;
       notifyListeners();
     }
   }
@@ -76,6 +84,7 @@ class DiaryEditorProvider extends ChangeNotifier {
     if (_isFontSelected && _showFontOptions) {
       _isColorSelected = false;
       _isEmojiSelected = false;
+      _isImageSelected = false;
     }
     notifyListeners();
   }
@@ -92,6 +101,7 @@ class DiaryEditorProvider extends ChangeNotifier {
       _isFontSelected = false;
       _showFontOptions = false;
       _isColorSelected = false;
+      _isImageSelected = false;
     }
     unfocusEditor();
   }
@@ -102,7 +112,7 @@ class DiaryEditorProvider extends ChangeNotifier {
     _controller.replaceText(index, length, emoji, TextSelection.collapsed(offset: index + emoji.length));
     unfocusEditor();
   }
-
+  
   void toggleColorOptions() {
     _isColorSelected = !_isColorSelected;
     
@@ -111,6 +121,7 @@ class DiaryEditorProvider extends ChangeNotifier {
       _isFontSelected = false;
       _showFontOptions = false;
       _isEmojiSelected = false;
+      _isImageSelected = false;
     }
 
     notifyListeners();
@@ -126,7 +137,33 @@ class DiaryEditorProvider extends ChangeNotifier {
     return '#${color.value.toRadixString(16).padLeft(8, '0').toUpperCase()}';
   }
 
+  void toggleImageSelection() {
+    _isImageSelected = !_isImageSelected;
+    if(_isImageSelected){
+            unfocusEditor();
+       _isFontSelected = false;
+      _showFontOptions = false;
+      _isEmojiSelected = false;
+      _isColorSelected = false;     
+    }
+    notifyListeners();
+  }
 
+  void setSelectedImage(XFile? image) {
+    _selectedImage = image;
+    notifyListeners();
+  }
+  void addImage(XFile image) {
+    _selectedImages.add(image);
+    notifyListeners();
+  }
+
+  void removeImage(int index) {
+    if (index >= 0 && index < _selectedImages.length) {
+      _selectedImages.removeAt(index);
+      notifyListeners();
+    }
+  }
   @override
   void dispose() {
     _diaryFocusNode.removeListener(_onFocusChange);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:luna/screens/diary/components/buttons/custom_save_button.dart';
 import 'package:luna/screens/diary/components/buttons/date_button.dart';
 import 'package:luna/screens/diary/components/diary_editor.dart';
+import 'package:luna/screens/diary/components/buttons/song_of_the_day.dart'; 
 
 class InsertDiary extends StatefulWidget {
   const InsertDiary({super.key});
@@ -41,6 +42,7 @@ class _InsertDiaryState extends State<InsertDiary> {
                   selectedDate: _selectedDate,
                   onDateChanged: _updateSelectedDate,
                 ),
+                SongOfTheDay(), // Nuevo widget
                 Expanded(
                   child: DiaryEditor(),
                 ),

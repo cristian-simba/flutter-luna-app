@@ -15,8 +15,8 @@ class CustomQuillToolbar extends StatelessWidget {
 
     return Container(
       height: DiaryConstants.toolbarHeight,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+      margin: const EdgeInsets.symmetric(vertical: 15),
       decoration: BoxDecoration(
         color: theme.brightness == Brightness.dark
             ? NavbarBackground.darkNavBackground
@@ -30,46 +30,56 @@ class CustomQuillToolbar extends StatelessWidget {
         ],
         borderRadius: const BorderRadius.all(Radius.circular(15)),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildFormatButton(
-            icon: Icons.format_bold,
-            isSelected: provider.isBoldSelected,
-            onPressed: provider.toggleBold,
-            iconColor: iconColor,
-          ),
-          _buildFormatButton(
-            icon: Icons.format_italic,
-            isSelected: provider.isItalicSelected,
-            onPressed: provider.toggleItalic,
-            iconColor: iconColor,
-          ),
-          _buildFormatButton(
-            icon: Icons.format_underline,
-            isSelected: provider.isUnderline,
-            onPressed: provider.toggleUnderline,
-            iconColor: iconColor,
-          ),
-          _buildFormatButton(
-            icon: Icons.text_fields,
-            isSelected: provider.isFontSelected,
-            onPressed: provider.toggleFontOptions,
-            iconColor: iconColor,
-          ),
-          _buildFormatButton(
-            icon: Icons.emoji_emotions_outlined,
-            isSelected: provider.isEmojiSelected,
-            onPressed: provider.toggleEmojiPicker,
-            iconColor: iconColor,
-          ),
-          _buildFormatButton(
-            icon: Icons.color_lens_outlined,
-            isSelected: provider.isColorSelected,
-            onPressed: provider.toggleColorOptions,
-            iconColor: iconColor,
-          ),
-        ],
+
+      child: SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildFormatButton(
+              icon: Icons.format_bold,
+              isSelected: provider.isBoldSelected,
+              onPressed: provider.toggleBold,
+              iconColor: iconColor,
+            ),
+            _buildFormatButton(
+              icon: Icons.format_italic,
+              isSelected: provider.isItalicSelected,
+              onPressed: provider.toggleItalic,
+              iconColor: iconColor,
+            ),
+            _buildFormatButton(
+              icon: Icons.format_underline,
+              isSelected: provider.isUnderline,
+              onPressed: provider.toggleUnderline,
+              iconColor: iconColor,
+            ),
+            _buildFormatButton(
+              icon: Icons.text_fields,
+              isSelected: provider.isFontSelected,
+              onPressed: provider.toggleFontOptions,
+              iconColor: iconColor,
+            ),
+            _buildFormatButton(
+              icon: Icons.emoji_emotions_outlined,
+              isSelected: provider.isEmojiSelected,
+              onPressed: provider.toggleEmojiPicker,
+              iconColor: iconColor,
+            ),
+            _buildFormatButton(
+              icon: Icons.color_lens_outlined,
+              isSelected: provider.isColorSelected,
+              onPressed: provider.toggleColorOptions,
+              iconColor: iconColor,
+            ),
+            _buildFormatButton(
+              icon: Icons.image_outlined,
+              isSelected: provider.isImageSelected,
+              onPressed: provider.toggleImageSelection,
+              iconColor: iconColor,
+            ),
+          ],
+        ),
       ),
     );
   }
