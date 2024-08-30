@@ -4,6 +4,8 @@ import 'package:luna/constants/route_transitions.dart';
 import 'package:luna/screens/diary/components/insert_diary.dart';
 import 'package:provider/provider.dart';
 import 'package:luna/providers/icon_color_provider.dart';  
+import 'package:luna/services/database.dart';
+import 'package:luna/models/diary_entry.dart';
 
 class Diary extends StatefulWidget {
   const Diary({super.key});

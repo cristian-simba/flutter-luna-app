@@ -33,15 +33,23 @@ class DiaryDatabaseHelper {
     ''');
   }
 
+  // Future<int> insertEntry(DiaryEntry entry) async {
+  //   final db = await database;
+  //   return await db.insert('diary_entries', entry.toMap());
+  // }
+
   Future<int> insertEntry(DiaryEntry entry) async {
     final db = await database;
-    return await db.insert('diary_entries', entry.toMap());
+    final entryMap = entry.toMap();
+    print('Lo que se guarda: $entryMap');  
+    return await db.insert('diary_entries', entryMap);
   }
 
   Future<List<DiaryEntry>> getAllEntries() async {
     final db = await database;
     final maps = await db.query('diary_entries', orderBy: 'date DESC');
-    return List.generate(maps.length, (i) => DiaryEntry.fromMap(maps[i]));
+      print('Lo que se debe ver: $maps'); 
+    return List.generate(maps.length, (i) => DiaryEntry.fromMap(maps[i])); 
   }
 
   Future<DiaryEntry?> getEntry(int id) async {

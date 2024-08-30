@@ -9,7 +9,14 @@ import 'package:luna/screens/diary/components/toolbar/color_options_container.da
 import 'package:luna/screens/diary/components/toolbar/emoji_picker.dart';
 
 class DiaryEditor extends StatefulWidget {
-  const DiaryEditor({Key? key}) : super(key: key);
+  final QuillController controller;
+  final Function(String) onImageAdded;
+
+  const DiaryEditor({
+    Key? key,
+    required this.controller,
+    required this.onImageAdded,
+  }) : super(key: key);
 
   @override
   _DiaryEditorState createState() => _DiaryEditorState();
@@ -49,6 +56,7 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
 
     return ChangeNotifierProvider(
       create: (_) => DiaryEditorProvider(),
+      
       child: Consumer<DiaryEditorProvider>(
         builder: (context, provider, child) {
           if (provider.isFontSelected || provider.isColorSelected || provider.isEmojiSelected || provider.isImageSelected) {
@@ -122,7 +130,7 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
             children: [
               if (provider.isFontSelected) const FontOptionsContainer(),
               if (provider.isColorSelected) const ColorOptionsContainer(),
-              if (provider.isImageSelected) const ImageOptionsContainer(), 
+            if (provider.isImageSelected) ImageOptionsContainer(onImageAdded: widget.onImageAdded), 
               if (provider.isEmojiSelected)
                 EmojiPickerWidget(onEmojiSelected: provider.insertEmoji),
             ],

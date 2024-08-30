@@ -7,7 +7,10 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class ImageOptionsContainer extends StatelessWidget {
-  const ImageOptionsContainer({Key? key}) : super(key: key);
+  final Function(String) onImageAdded;
+
+  // Eliminar 'const' del constructor
+  ImageOptionsContainer({Key? key, required this.onImageAdded}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +38,7 @@ class ImageOptionsContainer extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.only(left: 7, top:5),
+              padding: EdgeInsets.only(left: 7, top: 5),
               child: Text(
                 'Imágenes',
                 style: TextStyle(
@@ -49,7 +52,7 @@ class ImageOptionsContainer extends StatelessWidget {
               height: 1,
               color: theme.brightness == Brightness.dark
                   ? SeparatorColors.darkSeparator
-                  : SeparatorColors.ligthSeparator
+                  : SeparatorColors.ligthSeparator,
             ),
             const SizedBox(height: 10),
             Expanded(
@@ -64,21 +67,21 @@ class ImageOptionsContainer extends StatelessWidget {
                             onPressed: () => _pickImage(context),
                             style: TextButton.styleFrom(
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0), 
+                                borderRadius: BorderRadius.circular(12.0),
                               ),
-                              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0), 
-                              backgroundColor: iconColor, 
+                              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0),
+                              backgroundColor: iconColor,
                             ),
                             child: const Text(
                               '+ Agregar imagen',
                               style: TextStyle(
-                                color: Colors.white, 
-                                fontWeight: FontWeight.bold
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          )
-                        ]
-                      )
+                          ),
+                        ],
+                      ),
                     )
                   : GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -86,7 +89,7 @@ class ImageOptionsContainer extends StatelessWidget {
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
                       ),
-                      itemCount: provider.selectedImages.length + 1, 
+                      itemCount: provider.selectedImages.length + 1,
                       itemBuilder: (context, index) {
                         if (index == provider.selectedImages.length) {
                           return Center(
@@ -95,8 +98,8 @@ class ImageOptionsContainer extends StatelessWidget {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.add_photo_alternate, size: 40, color: Colors.grey[400],),
-                                  Text('Agregar imagen', style: TextStyle(color: Colors.grey[400]),),
+                                  Icon(Icons.add_photo_alternate, size: 40, color: Colors.grey[400]),
+                                  Text('Agregar imagen', style: TextStyle(color: Colors.grey[400])),
                                 ],
                               ),
                             ),
@@ -132,9 +135,9 @@ class ImageOptionsContainer extends StatelessWidget {
   Future<void> _pickImage(BuildContext context) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
     if (pickedFile != null) {
       Provider.of<DiaryEditorProvider>(context, listen: false).addImage(pickedFile);
+      onImageAdded(pickedFile.path); // Call the callback with the image path
     }
   }
 }

@@ -1,10 +1,84 @@
-  import 'package:url_launcher/url_launcher.dart';
-  final web = Uri.parse('https://pub.dev/packages/url_launcher');
+import 'package:flutter/material.dart';
+import 'package:luna/constants/grid_painter.dart';
+import 'package:luna/constants/route_transitions.dart';
+import 'package:luna/screens/diary/components/insert_diary.dart';
+import 'package:provider/provider.dart';
+import 'package:luna/providers/icon_color_provider.dart';  
+import 'package:luna/services/database.dart';
+import 'package:luna/models/diary_entry.dart';
 
-  TextButton(onPressed: (){
-    launchUrl(web, mode: LaunchMode.inAppWebView);
-  }, child: Text("Web")),
-  
-  TextButton(onPressed: () => setState(() {
-    launchUrl(web, mode: LaunchMode.externalApplication);
-  }),
+class Diary extends StatefulWidget {
+  const Diary({super.key});
+
+  @override
+  _DiaryState createState() => _DiaryState();
+}
+
+class _DiaryState extends State<Diary> {
+  Future<List<DiaryEntry>>? _entriesFuture;  // Use nullable type
+
+  @override
+  void initState() {
+    super.initState();
+    _entriesFuture = DiaryDatabaseHelper.instance.getAllEntries();  // Ensure this is the correct constructor
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final iconColor = Provider.of<IconColorProvider>(context).iconColor;
+
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: CustomPaint(
+            painter: GridPainter(Theme.of(context)),
+          ),
+        ),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: Text('Diario'),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
+          body: FutureBuilder<List<DiaryEntry>>(
+            future: _entriesFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(child: Text('No entries found.'));
+              } else {
+                final entries = snapshot.data!;
+                return ListView.builder(
+                  itemCount: entries.length,
+                  itemBuilder: (context, index) {
+                    final entry = entries[index];
+                    return ListTile(
+                      subtitle: Text(entry.songName ?? 'No song name provided'),
+                      onTap: () {
+                        // Implementa la acción cuando se toque una entrada, si es necesario
+                      },
+                    );
+                  },
+                );
+              }
+            },
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                SlideAndFadeTransition(page: const InsertDiary()),
+              );
+            },
+            child: Icon(Icons.edit, color: Colors.white),
+            backgroundColor: iconColor,
+          ),
+        ),
+      ],
+    );
+  }
+}

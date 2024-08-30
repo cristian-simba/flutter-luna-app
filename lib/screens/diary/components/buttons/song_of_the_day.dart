@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:luna/providers/icon_color_provider.dart';
 
 class SongOfTheDay extends StatefulWidget {
-  const SongOfTheDay({Key? key}) : super(key: key);
+  final Function(String, String) onSongUpdated;
+
+  const SongOfTheDay({Key? key, required this.onSongUpdated}) : super(key: key);
 
   @override
   _SongOfTheDayState createState() => _SongOfTheDayState();
@@ -115,7 +117,11 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
           ],
         );
       },
-    );
+    ).then((_) {
+      if (tempSongName.isNotEmpty && tempSongUrl.isNotEmpty) {
+        widget.onSongUpdated(tempSongName, tempSongUrl);
+      }
+    });
   }
 
   void _launchURL() async {
