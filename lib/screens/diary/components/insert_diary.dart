@@ -42,7 +42,7 @@ class _InsertDiaryState extends State<InsertDiary> {
                   selectedDate: _selectedDate,
                   onDateChanged: _updateSelectedDate,
                 ),
-                SongOfTheDay(), // Nuevo widget
+                SongOfTheDay(),
                 Expanded(
                   child: DiaryEditor(),
                 ),

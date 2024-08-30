@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:luna/providers/diary_editor_provider.dart';
 import 'package:luna/constants/colors.dart';
 import 'package:luna/providers/icon_color_provider.dart';
-
 class CustomQuillToolbar extends StatelessWidget {
   const CustomQuillToolbar({Key? key}) : super(key: key);
 

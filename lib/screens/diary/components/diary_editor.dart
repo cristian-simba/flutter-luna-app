@@ -52,51 +52,59 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
       child: Consumer<DiaryEditorProvider>(
         builder: (context, provider, child) {
           if (provider.isFontSelected || provider.isColorSelected || provider.isEmojiSelected || provider.isImageSelected) {
-          _animationController.forward();
+            _animationController.forward();
           } else {
             _animationController.reverse();
           }
-          return Column(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 5, left: 20, right: 20),
-                  child: QuillEditor.basic(
-                    focusNode: provider.diaryFocusNode,
-                    controller: provider.controller,
-                    configurations: QuillEditorConfigurations(placeholder: "Escribe tu dia", customStyles: DefaultStyles(
-                      placeHolder: const DefaultTextBlockStyle(
-                        TextStyle(
-                          fontSize: 16, 
-                          height: 1.5, 
-                          color: Colors.grey
-                        ), 
-                        HorizontalSpacing.zero,
-                        VerticalSpacing.zero,
-                        VerticalSpacing(20, 20), 
-                        null,
-                      ),
-                      paragraph: DefaultTextBlockStyle(
-                        TextStyle(
-                          fontSize: 16, 
-                          height: 1.5, 
-                          wordSpacing: 1, 
-                          color: theme.brightness == Brightness.dark ? 
-                          Colors.white : Colors.black
-                        ), 
-                        HorizontalSpacing.zero,
-                        VerticalSpacing.zero,
-                        VerticalSpacing(20, 20), 
-                        null,
+          return PopScope(
+            canPop: !provider.isFontSelected && !provider.isColorSelected && !provider.isEmojiSelected && !provider.isImageSelected,
+            onPopInvoked: (didPop) {
+              if (didPop) return;
+              if (provider.isFontSelected || provider.isColorSelected || provider.isEmojiSelected || provider.isImageSelected) {
+                provider.closeAllContainers();
+              } else {
+                Future.microtask(() => Navigator.of(context).pop());
+              }
+            },
+            child: Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 5, left: 20, right: 20),
+                    child: QuillEditor.basic(
+                      focusNode: provider.diaryFocusNode,
+                      controller: provider.controller,
+                      configurations: QuillEditorConfigurations(
+                        placeholder: "Escribe tu dia",
+                        customStyles: DefaultStyles(
+                          placeHolder: const DefaultTextBlockStyle(
+                            TextStyle(fontSize: 16, height: 1.5, color: Colors.grey, fontFamily: "Nunito"),
+                            HorizontalSpacing.zero,
+                            VerticalSpacing.zero,
+                            VerticalSpacing(20, 20),
+                            null,
+                          ),
+                          paragraph: DefaultTextBlockStyle(
+                            TextStyle(
+                              fontSize: 16,
+                              height: 1.5,
+                              wordSpacing: 1,
+                              color: theme.brightness == Brightness.dark ? Colors.white : Colors.black
+                            ),
+                            HorizontalSpacing.zero,
+                            VerticalSpacing.zero,
+                            VerticalSpacing(20, 20),
+                            null,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              )
+                const CustomQuillToolbar(),
+                _buildAnimatedOptions(provider),
+              ],
             ),
-              const CustomQuillToolbar(),
-              _buildAnimatedOptions(provider),
-            ],
           );
         },
       ),

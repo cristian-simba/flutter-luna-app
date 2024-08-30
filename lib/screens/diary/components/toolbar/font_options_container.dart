@@ -24,7 +24,7 @@ class FontOptionsContainer extends StatelessWidget {
               : DiaryConstants.lightFontKeyboard,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
+              color: Colors.grey.withOpacity(0.5),
               blurRadius: 1,
             ),
           ],
@@ -35,7 +35,7 @@ class FontOptionsContainer extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Padding(
-                  padding: EdgeInsets.only(left: 7, top: 10),
+                  padding: EdgeInsets.only(left: 7, top: 5),
                   child: Text(
                     'Fuentes',
                     style: TextStyle(
@@ -58,8 +58,8 @@ class FontOptionsContainer extends StatelessWidget {
                       physics: NeverScrollableScrollPhysics(),
                       children: [
                         _fontButton(context, "Nunito"),
-                        _fontButton(context, "Roboto"),
-                        _fontButton(context, "Times New Roman"),
+                        _fontButton(context, "Abel"),
+                        _fontButton(context, "Yusei Magic"),
                         _fontButton(context, "Courier New"),
                       ],
                     ),
@@ -93,7 +93,8 @@ class FontOptionsContainer extends StatelessWidget {
           color: isSelected ? iconColor.withOpacity(0.05) : theme.brightness == Brightness.dark
               ? DiaryConstants.darkFontKeyboard
               : DiaryConstants.lightFontKeyboard,
-          border: Border.all(color: isSelected ? iconColor.withOpacity(0.6) : Color(0xFF9E9E9E).withOpacity(0.3)),
+          border: Border.all(width: 1.5, 
+          color: isSelected ? iconColor.withOpacity(0.9) : Color(0xFF9E9E9E).withOpacity(0.2)),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(

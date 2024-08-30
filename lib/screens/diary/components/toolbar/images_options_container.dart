@@ -35,7 +35,7 @@ class ImageOptionsContainer extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.only(left: 7, top: 10),
+              padding: EdgeInsets.only(left: 7, top:5),
               child: Text(
                 'Imágenes',
                 style: TextStyle(

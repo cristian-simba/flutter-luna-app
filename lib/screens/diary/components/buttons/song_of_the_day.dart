@@ -124,6 +124,7 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final iconColor = Provider.of<IconColorProvider>(context).iconColor;
 
     return GestureDetector(
@@ -140,7 +141,8 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: _songUrl.isNotEmpty ? FontWeight.bold : null,
-                color: _songUrl.isNotEmpty ? iconColor : Colors.grey[600],
+                color: _songUrl.isNotEmpty ? iconColor :         
+                theme.brightness == Brightness.dark ? Colors.grey[400]:Colors.grey[500],
               ),
             ),
           ],

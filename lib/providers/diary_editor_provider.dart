@@ -19,9 +19,13 @@ class DiaryEditorProvider extends ChangeNotifier {
   String _selectedFontFamily = "Nunito"; 
   String _selectedColor = '#000000';
 
-  DiaryEditorProvider() {
-    _controller = QuillController.basic();
+  DiaryEditorProvider() : _controller = QuillController.basic() {
     _diaryFocusNode.addListener(_onFocusChange);
+  }
+
+  void setController(QuillController controller) {
+    _controller = controller;
+    notifyListeners();
   }
 
   QuillController get controller => _controller;
@@ -47,6 +51,14 @@ class DiaryEditorProvider extends ChangeNotifier {
       _isImageSelected = false;
       notifyListeners();
     }
+  }
+
+  void closeAllContainers() {
+    _isFontSelected = false;
+    _isColorSelected = false;
+    _isEmojiSelected = false;
+    _isImageSelected = false;
+    notifyListeners();
   }
 
   void unfocusEditor() {

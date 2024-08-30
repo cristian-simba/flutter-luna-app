@@ -86,15 +86,23 @@ flutter:
   fonts:
     - family: Nunito
       fonts:
-        - asset: assets/fonts/Nunito-Bold.ttf
-        - asset: assets/fonts/Nunito-Light.ttf
-        - asset: assets/fonts/Nunito-Medium.ttf
-        - asset: assets/fonts/Nunito-Regular.ttf
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+        - asset: assets/fonts/Nunito/Nunito-Bold.ttf
+        - asset: assets/fonts/Nunito/Nunito-Light.ttf
+        - asset: assets/fonts/Nunito/Nunito-Medium.ttf
+        - asset: assets/fonts/Nunito/Nunito-Regular.ttf
+    - family: Abel
+      fonts:
+        - asset: assets/fonts/Abel/Abel-Regular.ttf
+    - family: Yusei Magic
+      fonts:
+        - asset: assets/fonts/YuseiMagic/YuseiMagic-Regular.ttf
+
+    # - family: Yusei_Magic
+    #   fonts:
+    #     - asset: assets/fonts/PixelifySans/PixelifySans-Regular.ttf
+    #     - asset: assets/fonts/PixelifySans/PixelifySans-Medium.ttf
+    #     - asset: assets/fonts/PixelifySans/PixelifySans-Bold.ttf
+
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
