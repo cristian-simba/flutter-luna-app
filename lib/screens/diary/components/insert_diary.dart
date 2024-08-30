@@ -6,6 +6,7 @@ import 'package:luna/screens/diary/components/buttons/song_of_the_day.dart';
 import 'package:luna/models/diary_entry.dart';
 import 'package:luna/services/database.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'dart:convert';
 
 class InsertDiary extends StatefulWidget {
   const InsertDiary({super.key});
@@ -40,7 +41,8 @@ class _InsertDiaryState extends State<InsertDiary> {
   }
 
   Future<void> _saveEntry() async {
-    final content = _controller.document.toPlainText();
+    final delta = _controller.document.toDelta();
+    final content = jsonEncode(delta.toJson());
     final entry = DiaryEntry(
       content: content,
       date: _selectedDate,

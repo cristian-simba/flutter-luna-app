@@ -19,7 +19,8 @@ class DiaryEditorProvider extends ChangeNotifier {
   String _selectedFontFamily = "Nunito"; 
   String _selectedColor = '#000000';
 
-  DiaryEditorProvider() : _controller = QuillController.basic() {
+  DiaryEditorProvider({QuillController? controller})
+      : _controller = controller ?? QuillController.basic() {
     _diaryFocusNode.addListener(_onFocusChange);
   }
 

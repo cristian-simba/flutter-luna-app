@@ -41,8 +41,14 @@ class DiaryDatabaseHelper {
   Future<int> insertEntry(DiaryEntry entry) async {
     final db = await database;
     final entryMap = entry.toMap();
-    print('Lo que se guarda: $entryMap');  
-    return await db.insert('diary_entries', entryMap);
+
+    // Inserta la entrada y obtiene el ID generado
+    final id = await db.insert('diary_entries', entryMap);
+
+    // Imprime el ID generado para depuración
+    print('El ID generado es: $id');
+    
+    return id;
   }
 
   Future<List<DiaryEntry>> getAllEntries() async {

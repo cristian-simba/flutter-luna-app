@@ -55,7 +55,7 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
     final theme = Theme.of(context);
 
     return ChangeNotifierProvider(
-      create: (_) => DiaryEditorProvider(),
+      create: (_) => DiaryEditorProvider(controller: widget.controller),
       
       child: Consumer<DiaryEditorProvider>(
         builder: (context, provider, child) {
@@ -130,7 +130,7 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
             children: [
               if (provider.isFontSelected) const FontOptionsContainer(),
               if (provider.isColorSelected) const ColorOptionsContainer(),
-            if (provider.isImageSelected) ImageOptionsContainer(onImageAdded: widget.onImageAdded), 
+              if (provider.isImageSelected) ImageOptionsContainer(onImageAdded: widget.onImageAdded), 
               if (provider.isEmojiSelected)
                 EmojiPickerWidget(onEmojiSelected: provider.insertEmoji),
             ],
