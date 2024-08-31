@@ -5,8 +5,21 @@ import 'package:luna/providers/icon_color_provider.dart';
 import 'package:luna/screens/diary/components/view/diary_list.dart';
 import 'package:luna/screens/diary/components/buttons/add_diary.dart';
 
-class Diary extends StatelessWidget {
+class Diary extends StatefulWidget {
   const Diary({Key? key}) : super(key: key);
+
+  @override
+  _DiaryState createState() => _DiaryState();
+}
+
+class _DiaryState extends State<Diary> {
+  Key _diaryListKey = UniqueKey();
+
+  void _refreshDiaryList() {
+    setState(() {
+      _diaryListKey = UniqueKey();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +27,11 @@ class Diary extends StatelessWidget {
 
     return Stack(
       children: [
-        Positioned.fill(
-          child: CustomPaint(
-            painter: GridPainter(Theme.of(context)),
-          ),
-        ),
+        // Positioned.fill(
+        //   child: CustomPaint(
+        //     painter: GridPainter(Theme.of(context)),
+        //   ),
+        // ),
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
@@ -26,8 +39,11 @@ class Diary extends StatelessWidget {
             backgroundColor: Colors.transparent,
             elevation: 0,
           ),
-          body: const DiaryList(),
-          floatingActionButton: AddDiary(iconColor: iconColor),
+          body: DiaryList(key: _diaryListKey),
+          floatingActionButton: AddDiary(
+            iconColor: iconColor,
+            onEntryAdded: _refreshDiaryList,
+          ),
         ),
       ],
     );

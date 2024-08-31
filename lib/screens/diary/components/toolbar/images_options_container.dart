@@ -52,7 +52,7 @@ class ImageOptionsContainer extends StatelessWidget {
               height: 1,
               color: theme.brightness == Brightness.dark
                   ? SeparatorColors.darkSeparator
-                  : SeparatorColors.ligthSeparator,
+                  : SeparatorColors.lightSeparator,
             ),
             const SizedBox(height: 10),
             Expanded(

@@ -47,7 +47,7 @@ class FontOptionsContainer extends StatelessWidget {
                 const SizedBox(height: 10),
                 Divider(height: 1, color: theme.brightness == Brightness.dark
                   ? SeparatorColors.darkSeparator
-                  : SeparatorColors.ligthSeparator), 
+                  : SeparatorColors.lightSeparator), 
                 const SizedBox(height: 10),
                 Expanded(
                   child: SingleChildScrollView(

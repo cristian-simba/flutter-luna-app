@@ -24,6 +24,11 @@ class DiaryConstants {
 }
 
 class SeparatorColors {
-  static const Color ligthSeparator = Color(0xFFD9D9D9);
+  static const Color lightSeparator = Color(0xFFD9D9D9);
   static const Color darkSeparator = Color(0xFF2A2A2A);
+}
+
+class PopupColors{
+  static const Color lightPopup = Color(0xFFFFFFFF);
+  static const Color darkPopup = Color(0xFF161616);
 }

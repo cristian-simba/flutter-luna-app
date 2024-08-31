@@ -8,6 +8,8 @@ class ImagePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     if (imagePaths.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -24,21 +26,33 @@ class ImagePreview extends StatelessWidget {
           }
           return Padding(
             padding: const EdgeInsets.only(right: 8.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.file(
-                file,
-                width: 250,
-                height: 250,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    width: 60,
-                    height: 60,
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.error),
-                  );
-                },
+            child: Container(
+              width: 250,
+              height: 250,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: theme.brightness == Brightness.dark ? Colors.grey.shade900: Colors.grey.shade50, 
+                  width: 12.0
+                ), // Borde gris claro de 2 píxeles
+                // borderRadius: BorderRadius.circular(5.0),
+                color: Colors.white, // Fondo blanco para el borde
+              ),
+              child: ClipRRect(
+                // borderRadius: BorderRadius.circular(8.0),
+                child: Image.file(
+                  file,
+                  width: 250,
+                  height: 250,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      width: 250,
+                      height: 250,
+                      color: Colors.grey[300],
+                      child: const Icon(Icons.error, size: 60),
+                    );
+                  },
+                ),
               ),
             ),
           );

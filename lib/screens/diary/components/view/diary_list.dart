@@ -40,7 +40,10 @@ class _DiaryListState extends State<DiaryList> {
           final entries = snapshot.data!;
           return ListView.builder(
             itemCount: entries.length,
-            itemBuilder: (context, index) => DiaryCard(entry: entries[index]),
+            itemBuilder: (context, index) => DiaryCard(
+              entry: entries[index],
+              onDelete: _loadEntries,
+            ),
           );
         }
       },

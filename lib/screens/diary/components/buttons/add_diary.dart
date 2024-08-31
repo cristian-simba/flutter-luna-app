@@ -4,8 +4,13 @@ import 'package:luna/screens/diary/components/insert_diary.dart';
 
 class AddDiary extends StatelessWidget {
   final Color iconColor;
+  final VoidCallback onEntryAdded;
 
-  const AddDiary({Key? key, required this.iconColor}) : super(key: key);
+  const AddDiary({
+    Key? key, 
+    required this.iconColor, 
+    required this.onEntryAdded
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,12 +18,10 @@ class AddDiary extends StatelessWidget {
       onPressed: () {
         Navigator.push(
           context,
-          SlideAndFadeTransition(page: const InsertDiary()),
-        ).then((_) {
-          // Refresh the entries list when returning from InsertDiary
-          // You might want to use a state management solution or
-          // callback to refresh the DiaryList widget
-        });
+          SlideAndFadeTransition(
+            page: InsertDiary(onEntryAdded: onEntryAdded),
+          ),
+        );
       },
       child: const Icon(Icons.edit, color: Colors.white),
       backgroundColor: iconColor,

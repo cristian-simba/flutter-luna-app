@@ -9,7 +9,9 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'dart:convert';
 
 class InsertDiary extends StatefulWidget {
-  const InsertDiary({super.key});
+  final VoidCallback onEntryAdded;
+
+  const InsertDiary({Key? key, required this.onEntryAdded}) : super(key: key);
 
   @override
   _InsertDiaryState createState() => _InsertDiaryState();
@@ -43,6 +45,15 @@ class _InsertDiaryState extends State<InsertDiary> {
   Future<void> _saveEntry() async {
     final delta = _controller.document.toDelta();
     final content = jsonEncode(delta.toJson());
+
+    // Check if the content is empty or just contains newlines/whitespace
+    if (content.trim().isEmpty || content == jsonEncode([{"insert":"\n"}])) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('El contenido no puede estar vacio')),
+      );
+      return;
+    }
+
     final entry = DiaryEntry(
       content: content,
       date: _selectedDate,
@@ -54,9 +65,10 @@ class _InsertDiaryState extends State<InsertDiary> {
     try {
       await DiaryDatabaseHelper.instance.insertEntry(entry);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Diary entry saved successfully!')),
+        SnackBar(content: Text('Diario guardado')),
       );
-      // Optionally, navigate back or clear the form
+      widget.onEntryAdded(); // Call the callback to update the diary list
+      Navigator.of(context).pop(); // Return to the diary screen
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error saving diary entry: $e')),

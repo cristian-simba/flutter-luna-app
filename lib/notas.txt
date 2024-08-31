@@ -1,116 +1,136 @@
 import 'dart:convert';
-import 'package:luna/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:luna/constants/grid_painter.dart';
-import 'package:luna/constants/route_transitions.dart';
-import 'package:luna/screens/diary/components/insert_diary.dart';
-import 'package:provider/provider.dart';
-import 'package:luna/providers/icon_color_provider.dart';  
-import 'package:luna/services/database.dart';
 import 'package:luna/models/diary_entry.dart';
+import 'package:luna/utils/date_formatter.dart';
+import 'package:luna/screens/diary/components/view/image_preview.dart';
+import 'package:luna/services/database.dart';
+import 'package:luna/constants/colors.dart';
+class DiaryCard extends StatelessWidget {
+  final DiaryEntry entry;
+  final VoidCallback onDelete;
 
-class Diary extends StatefulWidget {
-  const Diary({super.key});
+  const DiaryCard({
+    Key? key,
+    required this.entry,
+    required this.onDelete,
+  }) : super(key: key);
 
-  @override
-  _DiaryState createState() => _DiaryState();
-}
+  Future<void> _deleteEntry(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar eliminación'),
+          content: const Text('¿Estás seguro de que quieres eliminar esta entrada?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            TextButton(
+              child: const Text('Eliminar'),
+              onPressed: () => Navigator.of(context).pop(true),
+            ),
+          ],
+        );
+      },
+    );
 
-class _DiaryState extends State<Diary> {
-  Future<List<DiaryEntry>>? _entriesFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _entriesFuture = DiaryDatabaseHelper.instance.getAllEntries();
+    if (confirmed == true) {
+      await DiaryDatabaseHelper.instance.deleteEntry(entry.id!);
+      onDelete();
+    }
   }
-  
 
   @override
   Widget build(BuildContext context) {
-    final iconColor = Provider.of<IconColorProvider>(context).iconColor;
+    final theme = Theme.of(context);
 
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: CustomPaint(
-            painter: GridPainter(Theme.of(context)),
-          ),
-        ),
-        Scaffold(
-          backgroundColor: Colors.transparent, 
-          appBar: AppBar(
-            title: Text('Diario'),
-            backgroundColor: Colors.transparent, 
-            elevation: 0, 
-          ),
-          body: FutureBuilder<List<DiaryEntry>>(
-            future: _entriesFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('No entries found.'));
-              } else {
-                final entries = snapshot.data!;
-                return ListView.builder(
-                  itemCount: entries.length,
-                  itemBuilder: (context, index) {
-                    final entry = entries[index];
-                    try {
-                      // Verificar y decodificar el contenido JSON de Quill
-                      final jsonMap = jsonDecode(entry.content);
+    try {
+      final jsonMap = jsonDecode(entry.content);
+      final document = Document.fromJson(jsonMap);
+      final QuillController _controller = QuillController(
+        document: document,
+        readOnly: true,
+        selection: const TextSelection.collapsed(offset: 0),
+      );
 
-                      // Crear un documento desde el JSON decodificado
-                      final document = Document.fromJson(jsonMap);
-
-                      // Crear un controlador QuillDocument con el documento
-                      final QuillController _controller = QuillController(
-                        document: document,
-                        readOnly: true,
-                        selection: const TextSelection.collapsed(offset: 0),
-                      );
-
-                      return ListTile(
-                        title: Text(formatDate(entry.date)),
-
-                        subtitle: QuillEditor.basic(
-                          controller: _controller,
-                          configurations: QuillEditorConfigurations(showCursor: false),
+      return Card(
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        color: PopupColors.darkPopup,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    formatDate(entry.date),
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+                  PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_vert, color: Colors.white, size: 23),
+                    onSelected: (value) {
+                      if (value == 'delete') {
+                        _deleteEntry(context);
+                      }
+                    },
+                    color: theme.brightness == Brightness.dark ? Color(0xFF2A2A2A) : null,
+                    itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                      PopupMenuItem<String>(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Icon(Icons.delete, color: Colors.red),
+                            const SizedBox(width: 5),
+                            Text('Eliminar'),
+                          ],
                         ),
-                        
-                        onTap: () {
-                          // Implementa la acción cuando se toque una entrada, si es necesario
-                        },
-                      );
-                    } catch (e) {
-                      // Manejo del error en caso de que el contenido no sea un JSON válido
-                      return ListTile(
-                        title: Text('Error al cargar la entrada'),
-                        subtitle: Text('El contenido de esta entrada no es válido.'),
-                      );
-                    }
-                  },
-                );
-              }
-            },
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                SlideAndFadeTransition(page: const InsertDiary()),
-              );
-            },
-            child: Icon(Icons.edit, color: Colors.white,),
-            backgroundColor: iconColor,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                child: QuillEditor.basic(
+                  controller: _controller,
+                  configurations: QuillEditorConfigurations(
+                    customStyles: DefaultStyles(
+                      paragraph: DefaultTextBlockStyle(
+                        TextStyle(
+                          fontSize: 16,
+                          height: 1.5,
+                          wordSpacing: 1,
+                          color: theme.brightness == Brightness.dark ? Colors.white : Colors.black
+                        ),
+                        HorizontalSpacing.zero,
+                        VerticalSpacing.zero,
+                        VerticalSpacing(20, 20),
+                        null,
+                      ),
+                    )
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              ImagePreview(imagePaths: entry.imagePaths),
+            ],
           ),
         ),
-      ],
-    );
+      );
+    } catch (e) {
+      return ListTile(
+        title: const Text('Error al cargar la entrada'),
+        subtitle: const Text('El contenido de esta entrada no es válido.'),
+        trailing: IconButton(
+          icon: const Icon(Icons.delete, color: Colors.red),
+          onPressed: () => _deleteEntry(context),
+        ),
+      );
+    }
   }
 }
-
