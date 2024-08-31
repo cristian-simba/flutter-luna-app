@@ -15,3 +15,8 @@ Future<Uint8List?> pickImage() async {
 String imageToBase64(Uint8List imageBytes) {
   return base64Encode(imageBytes);
 }
+
+Uint8List base64ToImage(String base64String) {
+  return base64Decode(base64String);
+}
+

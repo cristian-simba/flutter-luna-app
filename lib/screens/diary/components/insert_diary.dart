@@ -5,7 +5,7 @@ import 'package:luna/screens/diary/components/buttons/date_button.dart';
 import 'package:luna/screens/diary/components/buttons/song_of_the_day.dart';
 import 'package:luna/models/diary_entry.dart';
 import 'package:luna/services/database.dart';
-import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:flutter_quill/flutter_quill.dart';
 import 'dart:convert';
 
 class InsertDiary extends StatefulWidget {
@@ -21,7 +21,7 @@ class _InsertDiaryState extends State<InsertDiary> {
   String _songUrl = "";
   List<String> _imagePaths = [];
   
-  final quill.QuillController _controller = quill.QuillController.basic();
+  final QuillController _controller = QuillController.basic();
 
   void _updateSelectedDate(DateTime date) {
     setState(() => _selectedDate = date);

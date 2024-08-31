@@ -1,4 +1,7 @@
+import 'dart:convert';
+import 'package:luna/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:luna/constants/grid_painter.dart';
 import 'package:luna/constants/route_transitions.dart';
 import 'package:luna/screens/diary/components/insert_diary.dart';
@@ -15,13 +18,14 @@ class Diary extends StatefulWidget {
 }
 
 class _DiaryState extends State<Diary> {
-  Future<List<DiaryEntry>>? _entriesFuture;  // Use nullable type
+  Future<List<DiaryEntry>>? _entriesFuture;
 
   @override
   void initState() {
     super.initState();
-    _entriesFuture = DiaryDatabaseHelper.instance.getAllEntries();  // Ensure this is the correct constructor
+    _entriesFuture = DiaryDatabaseHelper.instance.getAllEntries();
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -35,33 +39,60 @@ class _DiaryState extends State<Diary> {
           ),
         ),
         Scaffold(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.transparent, 
           appBar: AppBar(
             title: Text('Diario'),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
+            backgroundColor: Colors.transparent, 
+            elevation: 0, 
           ),
           body: FutureBuilder<List<DiaryEntry>>(
             future: _entriesFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(child: Text('No entries found.'));
+                return const Center(child: Text('No entries found.'));
               } else {
                 final entries = snapshot.data!;
                 return ListView.builder(
                   itemCount: entries.length,
                   itemBuilder: (context, index) {
                     final entry = entries[index];
-                    return ListTile(
-                      subtitle: Text(entry.songName ?? 'No song name provided'),
-                      onTap: () {
-                        // Implementa la acción cuando se toque una entrada, si es necesario
-                      },
-                    );
+                    try {
+                      // Verificar y decodificar el contenido JSON de Quill
+                      final jsonMap = jsonDecode(entry.content);
+
+                      // Crear un documento desde el JSON decodificado
+                      final document = Document.fromJson(jsonMap);
+
+                      // Crear un controlador QuillDocument con el documento
+                      final QuillController _controller = QuillController(
+                        document: document,
+                        readOnly: true,
+                        selection: const TextSelection.collapsed(offset: 0),
+                      );
+
+                      return ListTile(
+                        title: Text(formatDate(entry.date)),
+
+                        subtitle: QuillEditor.basic(
+                          controller: _controller,
+                          configurations: QuillEditorConfigurations(showCursor: false),
+                        ),
+                        
+                        onTap: () {
+                          // Implementa la acción cuando se toque una entrada, si es necesario
+                        },
+                      );
+                    } catch (e) {
+                      // Manejo del error en caso de que el contenido no sea un JSON válido
+                      return ListTile(
+                        title: Text('Error al cargar la entrada'),
+                        subtitle: Text('El contenido de esta entrada no es válido.'),
+                      );
+                    }
                   },
                 );
               }
@@ -74,7 +105,7 @@ class _DiaryState extends State<Diary> {
                 SlideAndFadeTransition(page: const InsertDiary()),
               );
             },
-            child: Icon(Icons.edit, color: Colors.white),
+            child: Icon(Icons.edit, color: Colors.white,),
             backgroundColor: iconColor,
           ),
         ),
@@ -82,3 +113,4 @@ class _DiaryState extends State<Diary> {
     );
   }
 }
+

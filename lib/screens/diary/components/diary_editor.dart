@@ -7,7 +7,6 @@ import 'package:luna/screens/diary/components/toolbar/font_options_container.dar
 import 'package:luna/screens/diary/components/toolbar/images_options_container.dart';
 import 'package:luna/screens/diary/components/toolbar/color_options_container.dart'; 
 import 'package:luna/screens/diary/components/toolbar/emoji_picker.dart';
-
 class DiaryEditor extends StatefulWidget {
   final QuillController controller;
   final Function(String) onImageAdded;
@@ -83,7 +82,7 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
                       focusNode: provider.diaryFocusNode,
                       controller: provider.controller,
                       configurations: QuillEditorConfigurations(
-                        placeholder: "Escribe tu dia",
+                        placeholder: "Escribe tu dia aqui....",
                         customStyles: DefaultStyles(
                           placeHolder: const DefaultTextBlockStyle(
                             TextStyle(fontSize: 16, height: 1.5, color: Colors.grey, fontFamily: "Nunito"),

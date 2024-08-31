@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
-
 class DiaryEditorProvider extends ChangeNotifier {
   late QuillController _controller;
   final FocusNode _diaryFocusNode = FocusNode();
