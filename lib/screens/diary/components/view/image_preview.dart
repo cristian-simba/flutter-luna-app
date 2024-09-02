@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:luna/constants/colors.dart';
 
 class ImagePreview extends StatelessWidget {
   final List<String> imagePaths;
@@ -15,7 +16,7 @@ class ImagePreview extends StatelessWidget {
     }
 
     return SizedBox(
-      height: 250,
+      height: 200,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: imagePaths.length,
@@ -27,11 +28,12 @@ class ImagePreview extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: Container(
-              width: 250,
-              height: 250,
+              width: 200,
+              height: 200,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: theme.brightness == Brightness.dark ? Colors.grey.shade900: Colors.grey.shade50, 
+                  color: theme.brightness == Brightness.dark ? 
+                  CardColors.darkImageBorder : CardColors.lightImageBorder, 
                   width: 12.0
                 ), // Borde gris claro de 2 píxeles
                 // borderRadius: BorderRadius.circular(5.0),

@@ -62,7 +62,14 @@ class _NavbarState extends State<Navbar> {
           selectedItemColor: iconColor,
           unselectedItemColor: Colors.grey[400],
           onTap: _onItemTapped,
-          iconSize: 30.0,
+          iconSize: 25.0,
+          selectedLabelStyle: const TextStyle(
+            fontSize: 14.0, 
+            fontWeight: FontWeight.w700,
+          ),
+          unselectedLabelStyle: const TextStyle(
+            fontSize: 12.0, 
+          ),
         ),
       ),
     );

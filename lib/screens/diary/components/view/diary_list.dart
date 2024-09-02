@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luna/constants/colors.dart';
 import 'package:luna/services/database.dart';
 import 'package:luna/models/diary_entry.dart';
 import 'package:luna/screens/diary/components/view/diary_card.dart';
@@ -27,6 +28,8 @@ class _DiaryListState extends State<DiaryList> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return FutureBuilder<List<DiaryEntry>>(
       future: _entriesFuture,
       builder: (context, snapshot) {
@@ -38,12 +41,53 @@ class _DiaryListState extends State<DiaryList> {
           return const Center(child: Text('No entries found.'));
         } else {
           final entries = snapshot.data!;
-          return ListView.builder(
-            itemCount: entries.length,
-            itemBuilder: (context, index) => DiaryCard(
-              entry: entries[index],
-              onDelete: _loadEntries,
+          return CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                title: Text("Hola"),
+                scrolledUnderElevation: 0,
+                expandedHeight: 200.0,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: theme.brightness == Brightness.dark ? Image.asset(
+                    'assets/images/dark_background.jpg', 
+                    fit: BoxFit.cover,
+                  ) :  Image.asset(
+                    'assets/images/diary_background.jpg', 
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                pinned: true,
+              ),
+             SliverToBoxAdapter(
+              child: Container(
+                color: theme.brightness == Brightness.dark
+                    ? ScreenBackground.darkBackground
+                    : ScreenBackground.lightBackground,
+                padding: const EdgeInsets.only(left: 20, top: 20, bottom: 5),
+                child: const Text(
+                  "2024",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
             ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => Container(
+                    color: theme.brightness == Brightness.dark
+                        ? ScreenBackground.darkBackground
+                        : ScreenBackground.lightBackground,
+                    child: DiaryCard(
+                      entry: entries[index],
+                      onDelete: _loadEntries,
+                    ),
+                  ),
+                  childCount: entries.length,
+                ),
+              ),
+            ],
           );
         }
       },

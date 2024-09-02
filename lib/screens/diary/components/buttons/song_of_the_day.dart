@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:luna/providers/icon_color_provider.dart';
 
 class SongOfTheDay extends StatefulWidget {
@@ -24,8 +24,10 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
       context: context,
       builder: (BuildContext context) {
         final theme = Theme.of(context);
+        final iconColor = Provider.of<IconColorProvider>(context).iconColor;
 
         return AlertDialog(
+          // backgroundColor: Color(0xFF161616),
           title: const Center(
             child: Text(
               "Agregar tu canción del día",
@@ -42,7 +44,7 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                   hintText: "Nombre de la canción",
                   hintStyle: const  TextStyle(fontSize: 14),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
                   contentPadding: 
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -56,7 +58,7 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                   hintText: "Enlace de la canción",
                   hintStyle: const TextStyle(fontSize: 14),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
                   contentPadding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -80,8 +82,8 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                     onPressed: () => Navigator.of(context).pop(),
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        side: BorderSide(color: Colors.grey, width: 1.0),
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: BorderSide(color: Colors.grey, width: 1),
                       ),
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                     ),
@@ -105,10 +107,10 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                     },
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
+                        borderRadius: BorderRadius.circular(8.0),
                       ),
                       padding:const EdgeInsets.symmetric(vertical: 10.0),
-                      backgroundColor: Colors.blueGrey,
+                      backgroundColor: iconColor,
                     ),
                   ),
                 ),

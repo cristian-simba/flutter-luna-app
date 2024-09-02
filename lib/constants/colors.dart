@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+class ScreenBackground {
+  static const Color lightBackground = Color(0xFFFAFAFA);
+  static const Color darkBackground = Colors.black26;
+}
 class NavbarBackground {
   static const Color lightNavBackground = Color(0xFFFFFFFF);
   static const Color darkNavBackground = Color(0xFF161616);
@@ -9,6 +13,13 @@ class IconColors {
   static const Color primaryIcon = Color(0xFF7986CB);
   static const Color secondaryIcon= Color(0xFFFFAB91);
   static const Color thirdIcon = Color(0xFF607D8B);
+}
+
+class CardColors {
+  static const Color lightCard = Colors.white;
+  static const Color darkCard = Color(0xFF161616);
+  static const Color lightImageBorder = Color(0xFFFAFAFA);
+  static const Color darkImageBorder = Colors.black87;
 }
 
 class EmojiPickerColor{

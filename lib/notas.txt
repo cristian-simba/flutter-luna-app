@@ -1,19 +1,99 @@
+import 'package:flutter/material.dart';
+import 'package:luna/constants/colors.dart';
+import 'package:luna/services/database.dart';
+import 'package:luna/models/diary_entry.dart';
+import 'package:luna/screens/diary/components/view/diary_card.dart';
+
+class DiaryList extends StatefulWidget {
+  const DiaryList({Key? key}) : super(key: key);
+
+  @override
+  _DiaryListState createState() => _DiaryListState();
+}
+
+class _DiaryListState extends State<DiaryList> {
+  Future<List<DiaryEntry>>? _entriesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadEntries();
+  }
+
+  void _loadEntries() {
+    setState(() {
+      _entriesFuture = DiaryDatabaseHelper.instance.getAllEntries();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return FutureBuilder<List<DiaryEntry>>(
+      future: _entriesFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No entries found.'));
+        } else {
+          final entries = snapshot.data!;
+          return CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 200.0,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Image.asset(
+                    'assets/images/diary_background.jpg', // Reemplaza con la ruta de tu imagen
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => Container(
+                    color: theme.brightness == Brightness.dark
+                        ? ScreenBackground.darkBackground
+                        : ScreenBackground.lightBackground,
+                    child: DiaryCard(
+                      entry: entries[index],
+                      onDelete: _loadEntries,
+                    ),
+                  ),
+                  childCount: entries.length,
+                ),
+              ),
+            ],
+          );
+        }
+      },
+    );
+  }
+}
+
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:luna/constants/colors.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:luna/models/diary_entry.dart';
 import 'package:luna/utils/date_formatter.dart';
 import 'package:luna/screens/diary/components/view/image_preview.dart';
 import 'package:luna/services/database.dart';
-import 'package:luna/constants/colors.dart';
+
 class DiaryCard extends StatelessWidget {
   final DiaryEntry entry;
   final VoidCallback onDelete;
+  // final VoidCallback onEdit;
 
   const DiaryCard({
     Key? key,
     required this.entry,
     required this.onDelete,
+    // required this.onEdit,
   }) : super(key: key);
 
   Future<void> _deleteEntry(BuildContext context) async {
@@ -22,7 +102,7 @@ class DiaryCard extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirmar eliminación'),
-          content: const Text('¿Estás seguro de que quieres eliminar esta entrada?'),
+          content: const Text('¿Estás seguro de que quieres eliminar este diario?'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),
@@ -43,6 +123,37 @@ class DiaryCard extends StatelessWidget {
     }
   }
 
+  void _showOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.edit),
+                title: const Text('Editar'),
+                onTap: () {
+                  Navigator.pop(context);
+                  // onEdit();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete, color: Colors.red),
+                title: const Text('Eliminar', style: TextStyle(color: Colors.red)),
+                onTap: () {
+                  Navigator.pop(context);
+                  _deleteEntry(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -57,10 +168,13 @@ class DiaryCard extends StatelessWidget {
       );
 
       return Card(
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        color: PopupColors.darkPopup,
+        margin: const EdgeInsets.symmetric(vertical:7, horizontal: 16),
+        color: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5)), 
+        ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -69,28 +183,11 @@ class DiaryCard extends StatelessWidget {
                 children: [
                   Text(
                     formatDate(entry.date),
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert, color: Colors.white, size: 23),
-                    onSelected: (value) {
-                      if (value == 'delete') {
-                        _deleteEntry(context);
-                      }
-                    },
-                    color: theme.brightness == Brightness.dark ? Color(0xFF2A2A2A) : null,
-                    itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                      PopupMenuItem<String>(
-                        value: 'delete',
-                        child: Row(
-                          children: [
-                            Icon(Icons.delete, color: Colors.red),
-                            const SizedBox(width: 5),
-                            Text('Eliminar'),
-                          ],
-                        ),
-                      ),
-                    ],
+                  IconButton(
+                    icon: const Icon(Icons.more_vert, size: 20),
+                    onPressed: () => _showOptions(context),
                   ),
                 ],
               ),
@@ -99,11 +196,12 @@ class DiaryCard extends StatelessWidget {
                 child: QuillEditor.basic(
                   controller: _controller,
                   configurations: QuillEditorConfigurations(
+                    showCursor: false,
                     customStyles: DefaultStyles(
                       paragraph: DefaultTextBlockStyle(
                         TextStyle(
-                          fontSize: 16,
-                          height: 1.5,
+                          fontSize: 14,
+                          height: 1.25,
                           wordSpacing: 1,
                           color: theme.brightness == Brightness.dark ? Colors.white : Colors.black
                         ),
@@ -116,7 +214,7 @@ class DiaryCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
               ImagePreview(imagePaths: entry.imagePaths),
             ],
           ),
@@ -127,8 +225,8 @@ class DiaryCard extends StatelessWidget {
         title: const Text('Error al cargar la entrada'),
         subtitle: const Text('El contenido de esta entrada no es válido.'),
         trailing: IconButton(
-          icon: const Icon(Icons.delete, color: Colors.red),
-          onPressed: () => _deleteEntry(context),
+          icon: const Icon(Icons.more_vert),
+          onPressed: () => _showOptions(context),
         ),
       );
     }

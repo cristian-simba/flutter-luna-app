@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:luna/constants/colors.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:luna/models/diary_entry.dart';
 import 'package:luna/utils/date_formatter.dart';
 import 'package:luna/screens/diary/components/view/image_preview.dart';
 import 'package:luna/services/database.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DiaryCard extends StatelessWidget {
   final DiaryEntry entry;
@@ -15,6 +17,19 @@ class DiaryCard extends StatelessWidget {
     required this.entry,
     required this.onDelete,
   }) : super(key: key);
+
+  Future<void> _launchSongUrl(BuildContext context) async {
+    if (entry.songUrl != null && entry.songUrl!.isNotEmpty) {
+      final Uri url = Uri.parse(entry.songUrl!);
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No se pudo abrir el enlace.')),
+        );
+      }
+    }
+  }
 
   Future<void> _deleteEntry(BuildContext context) async {
     final confirmed = await showDialog<bool>(
@@ -37,7 +52,7 @@ class DiaryCard extends StatelessWidget {
       },
     );
 
-    if (confirmed == true) {
+  if (confirmed == true) {
       await DiaryDatabaseHelper.instance.deleteEntry(entry.id!);
       onDelete();
     }
@@ -57,10 +72,10 @@ class DiaryCard extends StatelessWidget {
       );
 
       return Card(
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        color: theme.brightness == Brightness.dark ? Color(0xFF161616) : Colors.white,
+        margin: const EdgeInsets.symmetric(vertical:7, horizontal: 16),
+        color: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(0)), // Borde recto
+          borderRadius: BorderRadius.all(Radius.circular(5)), 
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
@@ -72,14 +87,37 @@ class DiaryCard extends StatelessWidget {
                 children: [
                   Text(
                     formatDate(entry.date),
-                    style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red, size: 23),
+                    icon: const Icon(Icons.delete, color: Colors.red, size: 20),
                     onPressed: () => _deleteEntry(context),
                   ),
                 ],
               ),
+
+              if (entry.songUrl != null && entry.songUrl!.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.music_note, size: 16, color: theme.primaryColor),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => _launchSongUrl(context),
+                        child: Text(
+                          entry.songName ?? 'Canción del día',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: theme.primaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+
               const SizedBox(height: 8),
               SizedBox(
                 child: QuillEditor.basic(
