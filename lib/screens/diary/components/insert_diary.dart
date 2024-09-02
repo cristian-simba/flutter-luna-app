@@ -8,22 +8,53 @@ import 'package:luna/services/database.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'dart:convert';
 
-class InsertDiary extends StatefulWidget {
-  final VoidCallback onEntryAdded;
+class EditDiaryScreen extends StatefulWidget {
+  final DiaryEntry? entry;
+  final VoidCallback onEntryUpdated;
 
-  const InsertDiary({Key? key, required this.onEntryAdded}) : super(key: key);
+  const EditDiaryScreen({
+    Key? key,
+    this.entry,
+    required this.onEntryUpdated,
+  }) : super(key: key);
 
   @override
-  _InsertDiaryState createState() => _InsertDiaryState();
+  _EditDiaryScreenState createState() => _EditDiaryScreenState();
 }
 
-class _InsertDiaryState extends State<InsertDiary> {
-  DateTime _selectedDate = DateTime.now();
-  String _songName = "";
-  String _songUrl = "";
-  List<String> _imagePaths = [];
-  
-  final QuillController _controller = QuillController.basic();
+class _EditDiaryScreenState extends State<EditDiaryScreen> {
+  late DateTime _selectedDate;
+  late String _songName;
+  late String _songUrl;
+  late List<String> _imagePaths;
+  late QuillController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeData();
+  }
+
+  void _initializeData() {
+    if (widget.entry != null) {
+      // Editing existing entry
+      _selectedDate = widget.entry!.date;
+      _songName = widget.entry!.songName ?? "";
+      _songUrl = widget.entry!.songUrl ?? "";
+      _imagePaths = widget.entry!.imagePaths;
+      _controller = QuillController(
+        document: Document.fromJson(jsonDecode(widget.entry!.content)),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+    } else {
+      // Creating new entry
+      _selectedDate = DateTime.now();
+      _songName = "";
+      _songUrl = "";
+      _imagePaths = [];
+      _controller = QuillController.basic();
+    }
+  }
 
   void _updateSelectedDate(DateTime date) {
     setState(() => _selectedDate = date);
@@ -46,15 +77,15 @@ class _InsertDiaryState extends State<InsertDiary> {
     final delta = _controller.document.toDelta();
     final content = jsonEncode(delta.toJson());
 
-    // Check if the content is empty or just contains newlines/whitespace
     if (content.trim().isEmpty || content == jsonEncode([{"insert":"\n"}])) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('El contenido no puede estar vacio')),
+        SnackBar(content: Text('El contenido no puede estar vacío')),
       );
       return;
     }
 
     final entry = DiaryEntry(
+      id: widget.entry?.id,
       content: content,
       date: _selectedDate,
       songName: _songName,
@@ -63,15 +94,22 @@ class _InsertDiaryState extends State<InsertDiary> {
     );
 
     try {
-      await DiaryDatabaseHelper.instance.insertEntry(entry);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Diario guardado')),
-      );
-      widget.onEntryAdded(); // Call the callback to update the diary list
-      Navigator.of(context).pop(); // Return to the diary screen
+      if (widget.entry != null) {
+        await DiaryDatabaseHelper.instance.updateEntry(entry);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Diario actualizado')),
+        );
+      } else {
+        await DiaryDatabaseHelper.instance.insertEntry(entry);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Diario guardado')),
+        );
+      }
+      widget.onEntryUpdated();
+      Navigator.of(context).pop();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving diary entry: $e')),
+        SnackBar(content: Text('Error al guardar el diario: $e')),
       );
     }
   }
@@ -85,6 +123,7 @@ class _InsertDiaryState extends State<InsertDiary> {
           child: Scaffold(
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
+              // title: Text(widget.entry != null ? 'Editar Diario' : 'Nuevo Diario'),
               actions: [
                 Padding(
                   padding: const EdgeInsets.only(right: 10, top: 5, bottom: 5),
@@ -99,6 +138,8 @@ class _InsertDiaryState extends State<InsertDiary> {
                   onDateChanged: _updateSelectedDate,
                 ),
                 SongOfTheDay(
+                  initialSongName: _songName,
+                  initialSongUrl: _songUrl,
                   onSongUpdated: _updateSongInfo,
                 ),
                 Expanded(

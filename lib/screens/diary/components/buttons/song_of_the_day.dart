@@ -5,20 +5,34 @@ import 'package:luna/providers/icon_color_provider.dart';
 
 class SongOfTheDay extends StatefulWidget {
   final Function(String, String) onSongUpdated;
+  final String initialSongName;
+  final String initialSongUrl;
 
-  const SongOfTheDay({Key? key, required this.onSongUpdated}) : super(key: key);
+  const SongOfTheDay({
+    Key? key,
+    required this.onSongUpdated,
+    this.initialSongName = "",
+    this.initialSongUrl = "",
+  }) : super(key: key);
 
   @override
   _SongOfTheDayState createState() => _SongOfTheDayState();
 }
 
 class _SongOfTheDayState extends State<SongOfTheDay> {
-  String _songName = "Canción del día";
-  String _songUrl = "";
+  late String _songName;
+  late String _songUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _songName = widget.initialSongName;
+    _songUrl = widget.initialSongUrl;
+  }
 
   void _showSongDialog() {
-    String tempSongName = "";
-    String tempSongUrl = "";
+    String tempSongName = _songName;
+    String tempSongUrl = _songUrl;
 
     showDialog(
       context: context,
@@ -27,7 +41,6 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
         final iconColor = Provider.of<IconColorProvider>(context).iconColor;
 
         return AlertDialog(
-          // backgroundColor: Color(0xFF161616),
           title: const Center(
             child: Text(
               "Agregar tu canción del día",
@@ -42,13 +55,14 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.music_note, size: 18),
                   hintText: "Nombre de la canción",
-                  hintStyle: const  TextStyle(fontSize: 14),
+                  hintStyle: const TextStyle(fontSize: 14),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  contentPadding: 
+                  contentPadding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                 ),
+                controller: TextEditingController(text: tempSongName),
                 onChanged: (value) => tempSongName = value,
               ),
               const SizedBox(height: 15),
@@ -63,11 +77,11 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                   contentPadding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                 ),
+                controller: TextEditingController(text: tempSongUrl),
                 onChanged: (value) => tempSongUrl = value,
               ),
             ],
           ),
-          // contentPadding: EdgeInsets.symmetric(vertical: 25.0, horizontal: 25), 
           actions: [
             Row(
               children: [
@@ -76,7 +90,7 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                     child: Text(
                       "Cancelar",
                       style: TextStyle(
-                        color: theme.brightness == Brightness.dark ? Colors.white:Colors.black
+                        color: theme.brightness == Brightness.dark ? Colors.white : Colors.black
                       ),
                     ),
                     onPressed: () => Navigator.of(context).pop(),
@@ -89,7 +103,7 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8), 
+                const SizedBox(width: 8),
                 Expanded(
                   child: TextButton(
                     child: Text(
@@ -102,6 +116,7 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                           _songName = tempSongName;
                           _songUrl = tempSongUrl;
                         });
+                        widget.onSongUpdated(_songName, _songUrl);
                         Navigator.of(context).pop();
                       }
                     },
@@ -109,8 +124,8 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      padding:const EdgeInsets.symmetric(vertical: 10.0),
-                      backgroundColor: iconColor,
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      backgroundColor: Provider.of<IconColorProvider>(context).iconColor,
                     ),
                   ),
                 ),
@@ -119,15 +134,15 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
           ],
         );
       },
-    ).then((_) {
-      if (tempSongName.isNotEmpty && tempSongUrl.isNotEmpty) {
-        widget.onSongUpdated(tempSongName, tempSongUrl);
-      }
-    });
+    );
   }
 
   void _launchURL() async {
-    await launchUrl(Uri.parse(_songUrl));
+    if (await canLaunch(_songUrl)) {
+      await launch(_songUrl);
+    } else {
+      throw 'Could not launch $_songUrl';
+    }
   }
 
   @override
@@ -145,12 +160,15 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                 size: 23, color: _songUrl.isNotEmpty ? iconColor : Colors.grey[400]),
             const SizedBox(width: 8),
             Text(
-              _songName,
+              _songName.isNotEmpty ? _songName : "Ingresa tu canción del día",
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: _songUrl.isNotEmpty ? FontWeight.bold : null,
-                color: _songUrl.isNotEmpty ? iconColor :         
-                theme.brightness == Brightness.dark ? Colors.grey[400]:Colors.grey[500],
+                color: _songUrl.isNotEmpty 
+                    ? iconColor 
+                    : theme.brightness == Brightness.dark 
+                        ? Colors.grey[400] 
+                        : Colors.grey[500],
               ),
             ),
           ],

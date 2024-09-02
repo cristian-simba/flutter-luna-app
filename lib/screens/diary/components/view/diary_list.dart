@@ -44,7 +44,7 @@ class _DiaryListState extends State<DiaryList> {
           return CustomScrollView(
             slivers: [
               SliverAppBar(
-                title: Text("Hola"),
+                // title: Text("Hola"),
                 scrolledUnderElevation: 0,
                 expandedHeight: 200.0,
                 flexibleSpace: FlexibleSpaceBar(
@@ -63,11 +63,11 @@ class _DiaryListState extends State<DiaryList> {
                 color: theme.brightness == Brightness.dark
                     ? ScreenBackground.darkBackground
                     : ScreenBackground.lightBackground,
-                padding: const EdgeInsets.only(left: 20, top: 20, bottom: 5),
+                padding: const EdgeInsets.only(left: 20, top: 20, bottom: 10),
                 child: const Text(
                   "2024",
-                  style: const TextStyle(
-                    fontSize: 18,
+                  style: TextStyle(
+                    fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -82,6 +82,7 @@ class _DiaryListState extends State<DiaryList> {
                     child: DiaryCard(
                       entry: entries[index],
                       onDelete: _loadEntries,
+                      onUpdate: _loadEntries,
                     ),
                   ),
                   childCount: entries.length,

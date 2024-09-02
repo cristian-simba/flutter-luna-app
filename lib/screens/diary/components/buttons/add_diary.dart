@@ -19,7 +19,7 @@ class AddDiary extends StatelessWidget {
         Navigator.push(
           context,
           SlideAndFadeTransition(
-            page: InsertDiary(onEntryAdded: onEntryAdded),
+            page: EditDiaryScreen(onEntryUpdated: onEntryAdded),
           ),
         );
       },

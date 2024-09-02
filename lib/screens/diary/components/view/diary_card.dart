@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:luna/constants/colors.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -7,16 +8,21 @@ import 'package:luna/utils/date_formatter.dart';
 import 'package:luna/screens/diary/components/view/image_preview.dart';
 import 'package:luna/services/database.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:luna/providers/icon_color_provider.dart';
+import 'package:luna/screens/diary/components/insert_diary.dart';
 
 class DiaryCard extends StatelessWidget {
   final DiaryEntry entry;
   final VoidCallback onDelete;
+  final VoidCallback onUpdate;
 
   const DiaryCard({
     Key? key,
     required this.entry,
     required this.onDelete,
+    required this.onUpdate,
   }) : super(key: key);
+
 
   Future<void> _launchSongUrl(BuildContext context) async {
     if (entry.songUrl != null && entry.songUrl!.isNotEmpty) {
@@ -58,9 +64,64 @@ class DiaryCard extends StatelessWidget {
     }
   }
 
+
+  void _showOptions(BuildContext context) {
+    final theme = Theme.of(context);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.zero),
+      ),
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.edit, size: 18),
+                title: const Text('Editar', style: TextStyle(fontSize: 16),),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditDiaryScreen(
+                        entry: entry,
+                        onEntryUpdated: () {
+                          onUpdate();
+                        },
+                      ),
+                    ),
+                  );
+                }
+              ),
+              Divider(
+                height: 1, 
+                color: theme.brightness == Brightness.dark
+                  ? SeparatorColors.darkSeparator
+                  : SeparatorColors.lightSeparator
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete, color: Colors.red, size: 18,),
+                title: const Text('Eliminar', style: TextStyle(color: Colors.red, fontSize: 16)),
+                onTap: () {
+                  Navigator.pop(context);
+                  _deleteEntry(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final iconColor = Provider.of<IconColorProvider>(context).iconColor;
 
     try {
       final jsonMap = jsonDecode(entry.content);
@@ -90,18 +151,17 @@ class DiaryCard extends StatelessWidget {
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red, size: 20),
-                    onPressed: () => _deleteEntry(context),
+                    icon: const Icon(Icons.more_vert, size: 20),
+                    onPressed: () => _showOptions(context),
                   ),
                 ],
               ),
 
               if (entry.songUrl != null && entry.songUrl!.isNotEmpty) ...[
-                const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.music_note, size: 16, color: theme.primaryColor),
-                    const SizedBox(width: 8),
+                    Icon(Icons.play_circle, size: 18, color: iconColor),
+                    const SizedBox(width: 5),
                     Expanded(
                       child: GestureDetector(
                         onTap: () => _launchSongUrl(context),
@@ -109,7 +169,8 @@ class DiaryCard extends StatelessWidget {
                           entry.songName ?? 'Canción del día',
                           style: TextStyle(
                             fontSize: 14,
-                            color: theme.primaryColor,
+                            color: iconColor,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
@@ -128,7 +189,7 @@ class DiaryCard extends StatelessWidget {
                       paragraph: DefaultTextBlockStyle(
                         TextStyle(
                           fontSize: 14,
-                          height: 1.25,
+                          height: 1.5,
                           wordSpacing: 1,
                           color: theme.brightness == Brightness.dark ? Colors.white : Colors.black
                         ),

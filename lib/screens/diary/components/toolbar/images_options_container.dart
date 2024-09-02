@@ -9,7 +9,6 @@ import 'dart:io';
 class ImageOptionsContainer extends StatelessWidget {
   final Function(String) onImageAdded;
 
-  // Eliminar 'const' del constructor
   ImageOptionsContainer({Key? key, required this.onImageAdded}) : super(key: key);
 
   @override
@@ -57,74 +56,74 @@ class ImageOptionsContainer extends StatelessWidget {
             const SizedBox(height: 10),
             Expanded(
               child: provider.selectedImages.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('No hay imágenes seleccionadas'),
-                          const SizedBox(height: 10),
-                          TextButton(
-                            onPressed: () => _pickImage(context),
-                            style: TextButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0),
-                              backgroundColor: iconColor,
-                            ),
-                            child: const Text(
-                              '+ Agregar imagen',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('No hay imágenes seleccionadas'),
+                    const SizedBox(height: 10),
+                    TextButton(
+                      onPressed: () => _pickImage(context),
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0),
+                        backgroundColor: iconColor,
                       ),
-                    )
-                  : GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
+                      child: const Text(
+                        '+ Agregar imagen',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      itemCount: provider.selectedImages.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index == provider.selectedImages.length) {
-                          return Center(
-                            child: TextButton(
-                              onPressed: () => _pickImage(context),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.add_photo_alternate, size: 40, color: Colors.grey[400]),
-                                  Text('Agregar imagen', style: TextStyle(color: Colors.grey[400])),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                        // For other indices, show the image
-                        return Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            Image.file(
-                              File(provider.selectedImages[index].path),
-                              fit: BoxFit.cover,
-                            ),
-                            Positioned(
-                              right: 0,
-                              top: 0,
-                              child: IconButton(
-                                icon: Icon(Icons.close, color: Colors.white),
-                                onPressed: () => provider.removeImage(index),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
                     ),
+                  ],
+                ),
+              )
+            : GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                ),
+                itemCount: provider.selectedImages.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == provider.selectedImages.length) {
+                    return Center(
+                      child: TextButton(
+                        onPressed: () => _pickImage(context),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.add_photo_alternate, size: 40, color: Colors.grey[400]),
+                            Text('Agregar imagen', style: TextStyle(color: Colors.grey[400])),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  // For other indices, show the image
+                  return Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.file(
+                        File(provider.selectedImages[index].path),
+                        fit: BoxFit.cover,
+                      ),
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        child: IconButton(
+                          icon: Icon(Icons.close, color: Colors.white),
+                          onPressed: () => provider.removeImage(index),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ],
         ),
