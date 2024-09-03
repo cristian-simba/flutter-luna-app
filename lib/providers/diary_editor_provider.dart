@@ -175,31 +175,30 @@ class DiaryEditorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-void addImage(String path) {
-  if (!_imagePaths.contains(path)) { // Verifica si la imagen ya está en la lista
-    _imagePaths.add(path);
-    notifyListeners();
+  void addImage(String path) {
+    if (!_imagePaths.contains(path)) { 
+      _imagePaths.add(path);
+      notifyListeners();
+    }
   }
-}
 
+  void removeImage(int index) {
+    if (index >= 0 && index < _imagePaths.length) {
+      final imagePath = _imagePaths[index];
+      _imagePaths.removeAt(index);
+      
+      // Elimina el archivo
+      File(imagePath).delete().then((_) {
+        print('Imagen eliminada del almacenamiento');
+      }).catchError((error) {
+        print('Error al eliminar la imagen: $error');
+      });
 
-void removeImage(int index) {
-  if (index >= 0 && index < _imagePaths.length) {
-    final imagePath = _imagePaths[index];
-    _imagePaths.removeAt(index);
-    
-    // Elimina el archivo
-    File(imagePath).delete().then((_) {
-      print('Imagen eliminada del almacenamiento');
-    }).catchError((error) {
-      print('Error al eliminar la imagen: $error');
-    });
-
-    // Llamar a updateImages después de eliminar la imagen
-    updateImages(_imagePaths);
-    notifyListeners();
+      // Llamar a updateImages después de eliminar la imagen
+      updateImages(_imagePaths);
+      notifyListeners();
+    }
   }
-}
 
 
   void updateImages(List<String> newPaths) {

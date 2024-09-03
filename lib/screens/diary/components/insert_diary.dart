@@ -6,6 +6,7 @@ import 'package:luna/screens/diary/components/buttons/song_of_the_day.dart';
 import 'package:luna/models/diary_entry.dart';
 import 'package:luna/services/database.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:luna/constants/colors.dart';
 import 'dart:convert';
 
 
@@ -77,15 +78,6 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
     });
   }
 
-  void _addImage(String path) {
-    setState(() {
-      _imagePaths.add(path);
-    });
-    _updateImages(_imagePaths); 
-    print("Update");
-    print(_imagePaths);
-  }
-
   Future<void> _saveEntry() async {
     final delta = _controller.document.toDelta();
     final content = jsonEncode(delta.toJson());
@@ -129,6 +121,8 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return GestureDetector(
@@ -137,6 +131,10 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
               // title: Text(widget.entry != null ? 'Editar Diario' : 'Nuevo Diario'),
+              scrolledUnderElevation: 0,
+              backgroundColor: theme.brightness == Brightness.dark ? 
+              ScreenBackground.darkBackground : 
+              ScreenBackground.lightBackground, 
               actions: [
                 Padding(
                   padding: const EdgeInsets.only(right: 10, top: 5, bottom: 5),
@@ -144,27 +142,31 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
                 )
               ],
             ),
-            body: Column(
-              children: [
-                DateButton(
-                  selectedDate: _selectedDate,
-                  onDateChanged: _updateSelectedDate,
-                ),
-                SongOfTheDay(
-                  initialSongName: _songName,
-                  initialSongUrl: _songUrl,
-                  onSongUpdated: _updateSongInfo,
-                ),
-                Expanded(
-                  child: DiaryEditor(
-                    controller: _controller,
-                    imagePaths: _imagePaths,
-                    onImageAdded: _addImage,
-                    updateImages: _updateImages,
+            body: Container(
+              color: theme.brightness == Brightness.dark ? 
+              ScreenBackground.darkBackground : 
+              ScreenBackground.lightBackground, 
+              child: Column(
+                children: [
+                  DateButton(
+                    selectedDate: _selectedDate,
+                    onDateChanged: _updateSelectedDate,
                   ),
-                ),
-              ],
-            ),
+                  SongOfTheDay(
+                    initialSongName: _songName,
+                    initialSongUrl: _songUrl,
+                    onSongUpdated: _updateSongInfo,
+                  ),
+                  Expanded(
+                    child: DiaryEditor(
+                      controller: _controller,
+                      imagePaths: _imagePaths,
+                      updateImages: _updateImages,
+                    ),
+                  ),
+                ],
+              ),
+            )
           ),
         );
       },

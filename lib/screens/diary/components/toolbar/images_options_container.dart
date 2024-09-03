@@ -8,12 +8,10 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 class ImageOptionsContainer extends StatelessWidget {
-  final Function(String) onImageAdded;
   final Function(List<String>) updateImages;
 
   ImageOptionsContainer({
     Key? key, 
-    required this.onImageAdded,
     required this.updateImages,
   }) : super(key: key);
 
@@ -160,8 +158,6 @@ Future<void> _pickImage(BuildContext context) async {
       // Agregar la imagen al proveedor
       provider.addImage(newImage.path);
 
-      // Llamar a onImageAdded y updateImages para cada imagen
-      onImageAdded(newImage.path);
     }
 
     // Actualiza la lista completa de imágenes después de agregar todas

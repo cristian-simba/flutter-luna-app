@@ -139,6 +139,14 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
   void _launchURL() async {
     await launchUrl(Uri.parse(_songUrl));
   }
+    
+  void _deleteSong() {
+    setState(() {
+      _songName = "";
+      _songUrl = "";
+    });
+    widget.onSongUpdated(_songName, _songUrl);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,27 +156,54 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
     return GestureDetector(
       onTap: _songUrl.isNotEmpty ? _launchURL : _showSongDialog,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+        padding: _songName.isNotEmpty && _songUrl.isNotEmpty
+            ? EdgeInsets.symmetric(horizontal: 15, vertical: 0)
+            : EdgeInsets.symmetric(horizontal: 15, vertical: 5),
         child: Row(
           children: [
-            Icon(Icons.play_circle,
-                size: 23, color: _songUrl.isNotEmpty ? iconColor : Colors.grey[400]),
+            Icon(
+              Icons.play_circle,
+              size: 23,
+              color: _songUrl.isNotEmpty ? iconColor : Colors.grey[400],
+            ),
             const SizedBox(width: 8),
-            Text(
-              _songName.isNotEmpty ? _songName : "Ingresa tu canción del día",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: _songUrl.isNotEmpty ? FontWeight.bold : null,
-                color: _songUrl.isNotEmpty 
-                    ? iconColor 
-                    : theme.brightness == Brightness.dark 
-                        ? Colors.grey[400] 
-                        : Colors.grey[500],
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      _songName.isNotEmpty ? _songName : "Ingresa tu canción del día",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: _songUrl.isNotEmpty ? FontWeight.bold : null,
+                        color: _songUrl.isNotEmpty
+                            ? iconColor
+                            : theme.brightness == Brightness.dark
+                                ? Colors.grey[400]
+                                : Colors.grey[500],
+                      ),
+                    ),
+                  ),
+                  if (_songName.isNotEmpty && _songUrl.isNotEmpty) ...[
+                    IconButton(
+                      icon: Icon(Icons.edit, color: iconColor, size: 20),
+                      onPressed: _showSongDialog,
+                    ),
+                  ],
+                ],
               ),
             ),
+            if (_songName.isNotEmpty && _songUrl.isNotEmpty) ...[
+              IconButton(
+                icon: Icon(Icons.close, color: Colors.grey[400], size: 20),
+                onPressed: _deleteSong,
+              ),
+            ],
           ],
         ),
       ),
     );
   }
+
 }
+
