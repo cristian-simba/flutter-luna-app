@@ -8,6 +8,7 @@ import 'package:luna/services/database.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'dart:convert';
 
+
 class EditDiaryScreen extends StatefulWidget {
   final DiaryEntry? entry;
   final VoidCallback onEntryUpdated;
@@ -54,6 +55,9 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
       _imagePaths = [];
       _controller = QuillController.basic();
     }
+    setState(() {});
+    print("Imagenes que estan guardadas");
+    print(_imagePaths);
   }
 
   void _updateSelectedDate(DateTime date) {
@@ -67,10 +71,19 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
     });
   }
 
+  void _updateImages(List<String> paths){
+    setState(() {
+      _imagePaths = paths;
+    });
+  }
+
   void _addImage(String path) {
     setState(() {
       _imagePaths.add(path);
     });
+    _updateImages(_imagePaths); 
+    print("Update");
+    print(_imagePaths);
   }
 
   Future<void> _saveEntry() async {
@@ -145,7 +158,9 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
                 Expanded(
                   child: DiaryEditor(
                     controller: _controller,
+                    imagePaths: _imagePaths,
                     onImageAdded: _addImage,
+                    updateImages: _updateImages,
                   ),
                 ),
               ],

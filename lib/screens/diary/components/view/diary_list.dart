@@ -38,7 +38,31 @@ class _DiaryListState extends State<DiaryList> {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No entries found.'));
+          return 
+           CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                // title: Text("Hola"),
+                scrolledUnderElevation: 0,
+                expandedHeight: 175.0,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: theme.brightness == Brightness.dark ? Image.asset(
+                    'assets/images/dark_background.jpg', 
+                    fit: BoxFit.cover,
+                  ) :  Image.asset(
+                    'assets/images/diary_background.jpg', 
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                pinned: true,
+              ),
+              SliverToBoxAdapter(
+                child: Column(  
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [Text('Empieza a escribir tu historia')]
+                  )
+              )
+            ]);
         } else {
           final entries = snapshot.data!;
           return CustomScrollView(
@@ -46,7 +70,7 @@ class _DiaryListState extends State<DiaryList> {
               SliverAppBar(
                 // title: Text("Hola"),
                 scrolledUnderElevation: 0,
-                expandedHeight: 200.0,
+                expandedHeight: 175.0,
                 flexibleSpace: FlexibleSpaceBar(
                   background: theme.brightness == Brightness.dark ? Image.asset(
                     'assets/images/dark_background.jpg', 
@@ -67,7 +91,7 @@ class _DiaryListState extends State<DiaryList> {
                 child: const Text(
                   "2024",
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w700,
                   ),
                 ),

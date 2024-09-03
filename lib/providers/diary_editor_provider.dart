@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
 class DiaryEditorProvider extends ChangeNotifier {
   late QuillController _controller;
   final FocusNode _diaryFocusNode = FocusNode();
@@ -17,11 +19,18 @@ class DiaryEditorProvider extends ChangeNotifier {
   List<XFile> get selectedImages => _selectedImages;
   String _selectedFontFamily = "Nunito"; 
   String _selectedColor = '#000000';
+  List<String> _imagePaths = [];
 
-  DiaryEditorProvider({QuillController? controller})
+  DiaryEditorProvider({QuillController? controller, List<String>? initialImagePaths})
       : _controller = controller ?? QuillController.basic() {
+    if (initialImagePaths != null) {
+      _imagePaths = List.from(initialImagePaths);
+    }
     _diaryFocusNode.addListener(_onFocusChange);
   }
+
+    List<String> get imagePaths => _imagePaths;
+
 
   void setController(QuillController controller) {
     _controller = controller;
@@ -165,17 +174,39 @@ class DiaryEditorProvider extends ChangeNotifier {
     _selectedImage = image;
     notifyListeners();
   }
-  void addImage(XFile image) {
-    _selectedImages.add(image);
+
+void addImage(String path) {
+  if (!_imagePaths.contains(path)) { // Verifica si la imagen ya está en la lista
+    _imagePaths.add(path);
     notifyListeners();
   }
+}
 
-  void removeImage(int index) {
-    if (index >= 0 && index < _selectedImages.length) {
-      _selectedImages.removeAt(index);
-      notifyListeners();
-    }
+
+void removeImage(int index) {
+  if (index >= 0 && index < _imagePaths.length) {
+    final imagePath = _imagePaths[index];
+    _imagePaths.removeAt(index);
+    
+    // Elimina el archivo
+    File(imagePath).delete().then((_) {
+      print('Imagen eliminada del almacenamiento');
+    }).catchError((error) {
+      print('Error al eliminar la imagen: $error');
+    });
+
+    // Llamar a updateImages después de eliminar la imagen
+    updateImages(_imagePaths);
+    notifyListeners();
   }
+}
+
+
+  void updateImages(List<String> newPaths) {
+    _imagePaths = newPaths;
+    notifyListeners();
+  }
+  
   @override
   void dispose() {
     _diaryFocusNode.removeListener(_onFocusChange);

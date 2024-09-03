@@ -38,7 +38,6 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
       context: context,
       builder: (BuildContext context) {
         final theme = Theme.of(context);
-        final iconColor = Provider.of<IconColorProvider>(context).iconColor;
 
         return AlertDialog(
           title: const Center(
@@ -138,11 +137,7 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
   }
 
   void _launchURL() async {
-    if (await canLaunch(_songUrl)) {
-      await launch(_songUrl);
-    } else {
-      throw 'Could not launch $_songUrl';
-    }
+    await launchUrl(Uri.parse(_songUrl));
   }
 
   @override

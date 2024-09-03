@@ -25,16 +25,8 @@ class DiaryCard extends StatelessWidget {
 
 
   Future<void> _launchSongUrl(BuildContext context) async {
-    if (entry.songUrl != null && entry.songUrl!.isNotEmpty) {
-      final Uri url = Uri.parse(entry.songUrl!);
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('No se pudo abrir el enlace.')),
-        );
-      }
-    }
+    final Uri url = Uri.parse(entry.songUrl!);
+    await launchUrl(url);
   }
 
   Future<void> _deleteEntry(BuildContext context) async {

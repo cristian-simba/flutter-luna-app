@@ -10,18 +10,25 @@ import 'package:luna/screens/diary/components/toolbar/emoji_picker.dart';
 class DiaryEditor extends StatefulWidget {
   final QuillController controller;
   final Function(String) onImageAdded;
-
-  const DiaryEditor({
+  final Function(List<String>) updateImages;
+  final List<String> imagePaths;
+  
+  DiaryEditor({
     Key? key,
     required this.controller,
     required this.onImageAdded,
-  }) : super(key: key);
+    required this.imagePaths,
+    required this.updateImages,
+  }) : super(key: key) {
+    print("ImagePats $imagePaths");
+  }
 
   @override
   _DiaryEditorState createState() => _DiaryEditorState();
 }
 
 class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin {
+
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimation;
 
@@ -54,7 +61,7 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
     final theme = Theme.of(context);
 
     return ChangeNotifierProvider(
-      create: (_) => DiaryEditorProvider(controller: widget.controller),
+      create: (_) => DiaryEditorProvider(controller: widget.controller, initialImagePaths: widget.imagePaths,),
       
       child: Consumer<DiaryEditorProvider>(
         builder: (context, provider, child) {
@@ -121,7 +128,7 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
   Widget _buildAnimatedOptions(DiaryEditorProvider provider) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      height: provider.isFontSelected || provider.isColorSelected || provider.isEmojiSelected|| provider.isImageSelected ? 250 : 0,
+      height: provider.isFontSelected || provider.isColorSelected || provider.isEmojiSelected || provider.isImageSelected ? 250 : 0,
       child: SlideTransition(
         position: _slideAnimation,
         child: SingleChildScrollView(
@@ -129,13 +136,23 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
             children: [
               if (provider.isFontSelected) const FontOptionsContainer(),
               if (provider.isColorSelected) const ColorOptionsContainer(),
-              if (provider.isImageSelected) ImageOptionsContainer(onImageAdded: widget.onImageAdded), 
-              if (provider.isEmojiSelected)
-                EmojiPickerWidget(onEmojiSelected: provider.insertEmoji),
+              if (provider.isImageSelected)
+                ImageOptionsContainer(
+                  onImageAdded: (path) {
+                    // widget.onImageAdded(path);
+                    // widget.updateImages(provider.imagePaths);
+                  },
+                  updateImages: (paths) {
+                    widget.updateImages(paths);
+                    provider.updateImages(paths);
+                  },
+                ),
+              if (provider.isEmojiSelected) EmojiPickerWidget(onEmojiSelected: provider.insertEmoji),
             ],
           ),
         ),
       ),
     );
   }
+
 }
