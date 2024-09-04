@@ -1,28 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:luna/screens/profile/profile.dart';
+import 'package:provider/provider.dart';
+import 'package:luna/constants/colors.dart';
+import 'package:luna/providers/icon_color_provider.dart';
+import 'package:luna/screens/diary/diary.dart';
 import 'package:luna/screens/analytics/analytics.dart';
 import 'package:luna/screens/calendary/calendary.dart';
-import 'package:luna/screens/diary/diary.dart';
-import 'package:provider/provider.dart';
-import 'package:luna/providers/icon_color_provider.dart';
-import 'package:luna/constants/colors.dart';
+import 'package:luna/screens/profile/profile.dart';
+import 'package:luna/screens/diary/components/buttons/add_diary.dart';
 
 class Navbar extends StatefulWidget {
   const Navbar({Key? key}) : super(key: key);
 
   @override
-  State<Navbar> createState() => _NavbarState();
+  State createState() => _NavbarState();
 }
 
 class _NavbarState extends State<Navbar> {
   int _selectedIndex = 0;
+  final GlobalKey<DiaryState> _diaryKey = GlobalKey<DiaryState>(); 
+  late List<_NavbarItem> _navbarItems;
 
-  static const List<_NavbarItem> _navbarItems = [
-    _NavbarItem(icon: Icons.menu_book_rounded, label: 'Diario', screen: Diary()),
-    _NavbarItem(icon: Icons.calendar_month_rounded, label: 'Calendario', screen: Calendary()),
-    _NavbarItem(icon: Icons.analytics_rounded, label: 'Analíticas', screen: Analytics()),
-    _NavbarItem(icon: Icons.account_circle_rounded, label: 'Perfil', screen: Profile()),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _navbarItems = [
+      _NavbarItem(icon: Icons.menu_book_rounded, screen: Diary(key: _diaryKey)),
+      _NavbarItem(icon: Icons.calendar_month_rounded, screen: const Calendary()),
+      _NavbarItem(icon: Icons.analytics_rounded, screen: const Analytics()),
+      _NavbarItem(icon: Icons.account_circle_rounded, screen: const Profile()),
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -40,56 +47,63 @@ class _NavbarState extends State<Navbar> {
         index: _selectedIndex,
         children: _navbarItems.map((item) => item.screen).toList(),
       ),
+      floatingActionButton: AddDiary(
+        iconColor: iconColor,
+        onEntryAdded: () {
+          // Call the refresh method of Diary
+          if (_selectedIndex == 0) {
+            _diaryKey.currentState?.refreshDiaryList();
+          }
+          setState(() {});
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: _buildBottomNavigationBar(theme, iconColor),
     );
   }
 
   Widget _buildBottomNavigationBar(ThemeData theme, Color iconColor) {
     return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 1,
-          )
-        ],
-      ),
-      child: ClipRRect(
-        child: BottomNavigationBar(
-          items: _navbarItems.map((item) => _buildBottomNavigationBarItem(item, theme)).toList(),
-          currentIndex: _selectedIndex,
-          selectedItemColor: iconColor,
-          unselectedItemColor: Colors.grey[400],
-          onTap: _onItemTapped,
-          iconSize: 25.0,
-          selectedLabelStyle: const TextStyle(
-            fontSize: 14.0, 
-            fontWeight: FontWeight.w700,
-          ),
-          unselectedLabelStyle: const TextStyle(
-            fontSize: 12.0, 
-          ),
+      height: 65.0, 
+      child: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 6.0,
+        color: theme.brightness == Brightness.dark
+          ? NavbarBackground.darkNavBackground
+          : NavbarBackground.lightNavBackground,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildNavBarItem(_navbarItems[0], 0, iconColor),
+            _buildNavBarItem(_navbarItems[1], 1, iconColor),
+            const SizedBox(width: 75),
+            _buildNavBarItem(_navbarItems[2], 2, iconColor),
+            _buildNavBarItem(_navbarItems[3], 3, iconColor),
+          ],
         ),
       ),
     );
   }
 
-  BottomNavigationBarItem _buildBottomNavigationBarItem(_NavbarItem item, ThemeData theme) {
-    return BottomNavigationBarItem(
-      icon: Icon(item.icon),
-      label: item.label,
-      backgroundColor: theme.brightness == Brightness.dark
-          ? NavbarBackground.darkNavBackground
-          : NavbarBackground.lightNavBackground,
+  Widget _buildNavBarItem(_NavbarItem item, int index, Color iconColor) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => _onItemTapped(index),
+        child: Center(
+          child: Icon(
+            item.icon,
+            size: 25,
+            color: _selectedIndex == index ? iconColor : Colors.grey[400],
+          ),
+        ),
+      ),
     );
   }
 }
 
 class _NavbarItem {
   final IconData icon;
-  final String label;
   final Widget screen;
 
-  const _NavbarItem({required this.icon, required this.label, required this.screen});
+  const _NavbarItem({required this.icon, required this.screen});
 }

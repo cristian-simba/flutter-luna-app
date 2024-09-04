@@ -90,7 +90,7 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
                         placeholder: "Escribe tu dia aqui....",
                         customStyles: DefaultStyles(
                           placeHolder: const DefaultTextBlockStyle(
-                            TextStyle(fontSize: 16, height: 1.5, color: Colors.grey, fontFamily: "Nunito"),
+                            TextStyle(fontSize: 15, height: 1.5, color: Colors.grey, fontFamily: "Nunito"),
                             HorizontalSpacing.zero,
                             VerticalSpacing.zero,
                             VerticalSpacing(20, 20),

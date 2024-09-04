@@ -177,7 +177,7 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                     child: Text(
                       _songName.isNotEmpty ? _songName : "Agrega tu canción del día",
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: _songUrl.isNotEmpty ? FontWeight.bold : null,
                         color: _songUrl.isNotEmpty
                             ? iconColor

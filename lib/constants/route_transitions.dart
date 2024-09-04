@@ -7,7 +7,7 @@ class SlideAndFadeTransition extends PageRouteBuilder {
     : super(
         pageBuilder: (context, animation, secondaryAnimation) => page,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);
+          const begin = Offset(0.0, 1.0);
           const end = Offset.zero;
           var slideAnimation = Tween(begin: begin, end: end).animate(animation);
           var fadeAnimation = Tween(begin: 0.0, end: 1.0).animate(animation);
@@ -18,4 +18,3 @@ class SlideAndFadeTransition extends PageRouteBuilder {
         },
       );
 }
-

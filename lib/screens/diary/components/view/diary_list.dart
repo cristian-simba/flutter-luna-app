@@ -170,7 +170,8 @@ class _DiaryListState extends State<DiaryList> {
                   ),
                 ),
                 pinned: true,
-                backgroundColor: Color(0x4DFFFFFF),
+                backgroundColor: theme.brightness == Brightness.dark ? 
+                PinnedColors.darkPinned : PinnedColors.lightPinned,
               ),
               SliverToBoxAdapter(
                 child: Container(

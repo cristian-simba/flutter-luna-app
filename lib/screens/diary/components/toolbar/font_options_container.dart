@@ -94,8 +94,8 @@ class FontOptionsContainer extends StatelessWidget {
               ? DiaryConstants.darkFontKeyboard
               : DiaryConstants.lightFontKeyboard,
           border: Border.all(width: 1.5, 
-          color: isSelected ? iconColor.withOpacity(0.9) : Color(0xFF9E9E9E).withOpacity(0.2)),
-          borderRadius: BorderRadius.circular(10),
+          color: isSelected ? iconColor.withOpacity(0.9) : Color(0xFF9E9E9E).withOpacity(0.1)),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
           fontFamily,

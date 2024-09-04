@@ -62,7 +62,7 @@ class DiaryCard extends StatelessWidget {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
+      // backgroundColor: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.zero),
       ),

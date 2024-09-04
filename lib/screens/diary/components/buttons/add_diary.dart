@@ -23,8 +23,9 @@ class AddDiary extends StatelessWidget {
           ),
         );
       },
-      child: const Icon(Icons.add, color: Colors.white),
+      child: Icon(Icons.add, color: Colors.white),
       backgroundColor: iconColor,
+      shape: const CircleBorder(), 
     );
   }
 }
