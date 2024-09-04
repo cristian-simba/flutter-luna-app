@@ -28,7 +28,8 @@ class DiaryDatabaseHelper {
         date TEXT,
         songName TEXT,
         songUrl TEXT,
-        imagePaths TEXT
+        imagePaths TEXT,
+        mood TEXT 
       )
     ''');
   }
@@ -85,4 +86,5 @@ class DiaryDatabaseHelper {
       whereArgs: [id],
     );
   }
+  
 }

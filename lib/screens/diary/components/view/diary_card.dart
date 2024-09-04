@@ -10,6 +10,7 @@ import 'package:luna/services/database.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:luna/providers/icon_color_provider.dart';
 import 'package:luna/screens/diary/components/insert_diary.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class DiaryCard extends StatelessWidget {
   final DiaryEntry entry;
@@ -110,6 +111,31 @@ class DiaryCard extends StatelessWidget {
     );
   }
 
+  String _getMoodSvg(String? mood) {
+    print("EL mod");
+    print(mood);
+    switch (mood) {
+      case 'Normal':
+        return 'assets/svgs/neutral.svg';
+      case 'Feliz':
+        return 'assets/svgs/happy.svg';
+      case 'Triste':
+        return 'assets/svgs/sad.svg';
+      case 'Enojado':
+        return 'assets/svgs/angry.svg';
+      case 'Confundido':
+        return 'assets/svgs/confused.svg';
+      case 'Sorprendido':
+        return 'assets/svgs/surprised.svg';
+      case 'Cansado':
+        return 'assets/svgs/tired.svg';
+      case 'x':
+        return 'assets/svgs/predetermined.svg';
+      default:
+        return 'assets/svgs/predetermined.svg';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -138,9 +164,19 @@ class DiaryCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    formatDate(entry.date),
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      Text(
+                        formatDate(entry.date),
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(width: 10),
+                      SvgPicture.asset(
+                        _getMoodSvg(entry.mood),
+                        width: 20,
+                        height: 20,
+                      ),
+                    ],
                   ),
                   IconButton(
                     icon: const Icon(Icons.more_vert, size: 20),

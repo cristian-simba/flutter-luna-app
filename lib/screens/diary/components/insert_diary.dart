@@ -3,12 +3,15 @@ import 'package:luna/screens/diary/components/buttons/custom_save_button.dart';
 import 'package:luna/screens/diary/components/diary_editor.dart';
 import 'package:luna/screens/diary/components/buttons/date_button.dart';
 import 'package:luna/screens/diary/components/buttons/song_of_the_day.dart';
+import 'package:luna/screens/diary/components/buttons/mood_modal.dart'; 
 import 'package:luna/models/diary_entry.dart';
 import 'package:luna/services/database.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:provider/provider.dart';
+import 'package:luna/providers/icon_color_provider.dart';
 import 'package:luna/constants/colors.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:convert';
-
 
 class EditDiaryScreen extends StatefulWidget {
   final DiaryEntry? entry;
@@ -30,6 +33,21 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
   late String _songUrl;
   late List<String> _imagePaths;
   late QuillController _controller;
+  String? _selectedMood;
+
+  void _showMoodModal() {
+    showDialog(
+      context: context,
+      builder: (context) => MoodModal(
+        selectedMood: _selectedMood,
+        onMoodSelected: (mood) {
+          setState(() {
+            _selectedMood = mood;
+          });
+        },
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -48,6 +66,7 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
         document: Document.fromJson(jsonDecode(widget.entry!.content)),
         selection: const TextSelection.collapsed(offset: 0),
       );
+      _selectedMood = widget.entry!.mood; // Set the mood if editing
     } else {
       // Creating new entry
       _selectedDate = DateTime.now();
@@ -96,6 +115,7 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
       songName: _songName,
       songUrl: _songUrl,
       imagePaths: _imagePaths,
+      mood: _selectedMood, 
     );
 
     try {
@@ -119,9 +139,33 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
     }
   }
 
+  String _getMoodSvg(String mood) {
+    switch (mood) {
+      case 'Normal':
+        return 'assets/svgs/neutral.svg';
+      case 'Feliz':
+        return 'assets/svgs/happy.svg';
+      case 'Triste':
+        return 'assets/svgs/sad.svg';
+      case 'Enojado':
+        return 'assets/svgs/angry.svg';
+      case 'Confundido':
+        return 'assets/svgs/confused.svg';
+      case 'Sorprendido':
+        return 'assets/svgs/surprised.svg';
+      case 'Cansado':
+        return 'assets/svgs/tired.svg';
+      case 'x':
+        return 'assets/svgs/predetermined.svg';
+      default:
+        return 'assets/svgs/predetermined.svg';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final iconColor = Provider.of<IconColorProvider>(context).iconColor;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -130,7 +174,6 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
           child: Scaffold(
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
-              // title: Text(widget.entry != null ? 'Editar Diario' : 'Nuevo Diario'),
               scrolledUnderElevation: 0,
               backgroundColor: theme.brightness == Brightness.dark ? 
               ScreenBackground.darkBackground : 
@@ -148,9 +191,26 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
               ScreenBackground.lightBackground, 
               child: Column(
                 children: [
-                  DateButton(
-                    selectedDate: _selectedDate,
-                    onDateChanged: _updateSelectedDate,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DateButton(
+                          selectedDate: _selectedDate,
+                          onDateChanged: _updateSelectedDate,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: GestureDetector(
+                          onTap: _showMoodModal,
+                          child: SvgPicture.asset(
+                            _getMoodSvg(_selectedMood ?? 'x'),
+                            width: 25,
+                            height: 25,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                   SongOfTheDay(
                     initialSongName: _songName,
@@ -166,7 +226,7 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
                   ),
                 ],
               ),
-            )
+            ),
           ),
         );
       },

@@ -7,6 +7,7 @@ class DiaryEntry {
   final String? songName;
   final String? songUrl;
   final List<String> imagePaths;
+  final String? mood; 
 
   DiaryEntry({
     this.id,
@@ -15,6 +16,7 @@ class DiaryEntry {
     this.songName,
     this.songUrl,
     required this.imagePaths,
+    this.mood,
   });
 
   Map<String, dynamic> toMap() {
@@ -25,6 +27,7 @@ class DiaryEntry {
       'songName': songName,
       'songUrl': songUrl,
       'imagePaths': jsonEncode(imagePaths),
+      'mood': mood,
     };
   }
 
@@ -36,6 +39,7 @@ class DiaryEntry {
       songName: map['songName'],
       songUrl: map['songUrl'],
       imagePaths: List<String>.from(jsonDecode(map['imagePaths'])),
+      mood: map['mood'], // Leer el estado de ánimo del mapa
     );
   }
 }

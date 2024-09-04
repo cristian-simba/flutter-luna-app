@@ -73,7 +73,7 @@ class _DiaryListState extends State<DiaryList> {
               const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
-                  'Elige un banner',
+                  'Elige una portada',
                 ),
               ),
               Expanded(

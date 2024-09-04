@@ -45,6 +45,7 @@ dependencies:
   url_launcher: ^6.3.0
   path_provider: ^2.1.4
   shared_preferences: ^2.3.2
+  flutter_svg: ^2.0.10+1
   flutter_localizations:
     sdk: flutter
 
@@ -74,6 +75,14 @@ flutter:
   assets:
     - assets/images/preset_background_1.jpg
     - assets/images/preset_background_2.jpg
+    - assets/svgs/happy.svg
+    - assets/svgs/sad.svg
+    - assets/svgs/angry.svg
+    - assets/svgs/confused.svg
+    - assets/svgs/neutral.svg
+    - assets/svgs/predetermined.svg
+    - assets/svgs/surprised.svg
+    - assets/svgs/tired.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

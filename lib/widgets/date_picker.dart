@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:luna/providers/icon_color_provider.dart';  
 
 class CustomCalendar extends StatefulWidget {
-  final Function(DateTime) onDateSelected; // Añade esta propiedad
+  final Function(DateTime) onDateSelected;
 
-  const CustomCalendar({required this.onDateSelected}); // Requiere esta propiedad
+  const CustomCalendar({required this.onDateSelected});
 
   @override
   _CustomCalendarState createState() => _CustomCalendarState();

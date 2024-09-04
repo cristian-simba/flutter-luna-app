@@ -1,102 +1,74 @@
 import 'package:flutter/material.dart';
-import 'package:luna/screens/profile/profile.dart';
-import 'package:luna/screens/analytics/analytics.dart';
-import 'package:luna/screens/calendary/calendary.dart';
-import 'package:luna/screens/diary/diary.dart';
 import 'package:provider/provider.dart';
 import 'package:luna/providers/icon_color_provider.dart';
-import 'package:luna/constants/colors.dart';
-import 'package:luna/screens/diary/components/buttons/add_diary.dart';
 
-class Navbar extends StatefulWidget {
-  const Navbar({Key? key}) : super(key: key);
+class MoodModal extends StatelessWidget {
+  final String? selectedMood;
+  final Function(String) onMoodSelected;
 
-  @override
-  State createState() => _NavbarState();
-}
-
-class _NavbarState extends State {
-  int _selectedIndex = 0;
-
-  final List<_NavbarItem> _navbarItems = [
-    _NavbarItem(icon: Icons.menu_book_rounded, label: 'Diario', screen: const Diary()),
-    _NavbarItem(icon: Icons.calendar_month_rounded, label: 'Calendario', screen: const Calendary()),
-    _NavbarItem(icon: Icons.analytics_rounded, label: 'Analíticas', screen: const Analytics()),
-    _NavbarItem(icon: Icons.account_circle_rounded, label: 'Perfil', screen: const Profile()),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  MoodModal({Key? key, this.selectedMood, required this.onMoodSelected}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
     final iconColor = Provider.of<IconColorProvider>(context).iconColor;
-
-    return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _navbarItems.map((item) => item.screen).toList(),
+  
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
       ),
-      floatingActionButton: AddDiary(
-        iconColor: iconColor,
-        onEntryAdded: () => setState(() {}),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: _buildBottomNavigationBar(theme, iconColor),
-    );
-  }
-
-  Widget _buildBottomNavigationBar(ThemeData theme, Color iconColor) {
-    return BottomAppBar(
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 6.0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _buildNavBarItem(_navbarItems[0], 0, iconColor),
-          _buildNavBarItem(_navbarItems[1], 1, iconColor),
-          const SizedBox(width: 40), // Espacio para el FAB
-          _buildNavBarItem(_navbarItems[2], 2, iconColor),
-          _buildNavBarItem(_navbarItems[3], 3, iconColor),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavBarItem(_NavbarItem item, int index, Color iconColor) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => _onItemTapped(index),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              item.icon,
-              color: _selectedIndex == index ? iconColor : Colors.grey[400],
-            ),
             Text(
-              item.label,
-              style: TextStyle(
-                color: _selectedIndex == index ? iconColor : Colors.grey[400],
-                fontSize: 12.0,
-              ),
+              'Selecciona tu estado de ánimo',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            ),
+            SizedBox(height: 20),
+            // Use Row to display the mood options horizontally
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: _moodOptions.map((mood) => Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    onMoodSelected(mood);
+                    Navigator.of(context).pop();
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        _getMoodIcon(mood),
+                        color: selectedMood == mood ? iconColor : Colors.grey[400], size: 30,
+                      ),
+                      SizedBox(height: 8),
+                      Text(mood, style: TextStyle(fontSize: 12),),
+                    ],
+                  ),
+                ),
+              )).toList(),
             ),
           ],
         ),
       ),
     );
   }
-}
 
-class _NavbarItem {
-  final IconData icon;
-  final String label;
-  final Widget screen;
+  IconData _getMoodIcon(String mood) {
+    switch (mood) {
+      case 'Feliz':
+        return Icons.sentiment_very_satisfied_outlined;
+      case 'Triste':
+        return Icons.sentiment_dissatisfied;
+      case 'Enojado':
+        return Icons.sentiment_very_dissatisfied;
+      case 'Normal':
+        return Icons.sentiment_neutral;
+      default:
+        return Icons.sentiment_neutral;
+    }
+  }
 
-  const _NavbarItem({required this.icon, required this.label, required this.screen});
+  List<String> get _moodOptions => ['Feliz', 'Triste', 'Enojado', 'Normal'];
 }
