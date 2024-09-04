@@ -42,10 +42,13 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
         return AlertDialog(
           title: const Center(
             child: Text(
-              "Agregar tu canción del día",
+              "Agrega tu canción del día",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             ),
           ),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)), 
+        ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -56,7 +59,7 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                   hintText: "Nombre de la canción",
                   hintStyle: const TextStyle(fontSize: 14),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                   contentPadding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -71,7 +74,7 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                   hintText: "Enlace de la canción",
                   hintStyle: const TextStyle(fontSize: 14),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                   contentPadding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -95,7 +98,7 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                     onPressed: () => Navigator.of(context).pop(),
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         side: BorderSide(color: Colors.grey, width: 1),
                       ),
                       padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -121,7 +124,7 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                     },
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       backgroundColor: Provider.of<IconColorProvider>(context).iconColor,
@@ -163,7 +166,7 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
           children: [
             Icon(
               Icons.play_circle,
-              size: 23,
+              size: 25,
               color: _songUrl.isNotEmpty ? iconColor : Colors.grey[400],
             ),
             const SizedBox(width: 8),
@@ -172,7 +175,7 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
                 children: [
                   Expanded(
                     child: Text(
-                      _songName.isNotEmpty ? _songName : "Ingresa tu canción del día",
+                      _songName.isNotEmpty ? _songName : "Agrega tu canción del día",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: _songUrl.isNotEmpty ? FontWeight.bold : null,

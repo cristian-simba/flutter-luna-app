@@ -98,7 +98,7 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
                           ),
                           paragraph: DefaultTextBlockStyle(
                             TextStyle(
-                              fontSize: 16,
+                              fontSize: 15,
                               height: 1.5,
                               wordSpacing: 1,
                               color: theme.brightness == Brightness.dark ? Colors.white : Colors.black
