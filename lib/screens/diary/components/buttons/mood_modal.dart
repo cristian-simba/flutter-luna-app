@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
-import 'package:luna/providers/icon_color_provider.dart';
+
 
 class MoodModal extends StatelessWidget {
   final String? selectedMood;
@@ -11,7 +10,6 @@ class MoodModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconColor = Provider.of<IconColorProvider>(context).iconColor;
 
     return Dialog(
       shape: RoundedRectangleBorder(

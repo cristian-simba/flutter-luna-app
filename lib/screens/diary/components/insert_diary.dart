@@ -7,8 +7,6 @@ import 'package:luna/screens/diary/components/buttons/mood_modal.dart';
 import 'package:luna/models/diary_entry.dart';
 import 'package:luna/services/database.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:provider/provider.dart';
-import 'package:luna/providers/icon_color_provider.dart';
 import 'package:luna/constants/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:convert';
@@ -165,7 +163,6 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final iconColor = Provider.of<IconColorProvider>(context).iconColor;
 
     return LayoutBuilder(
       builder: (context, constraints) {

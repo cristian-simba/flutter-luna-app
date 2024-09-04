@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:luna/constants/colors.dart';
-import 'package:luna/providers/icon_color_provider.dart';
 import 'package:luna/screens/diary/components/view/diary_list.dart';
 
 class Diary extends StatefulWidget {
@@ -22,7 +20,6 @@ class DiaryState extends State<Diary> {
 
   @override
   Widget build(BuildContext context) {
-    final iconColor = Provider.of<IconColorProvider>(context).iconColor;
     final theme = Theme.of(context);
 
     return Stack(
