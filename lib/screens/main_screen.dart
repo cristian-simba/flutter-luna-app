@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:luna/constants/colors.dart';
 import 'package:luna/providers/icon_color_provider.dart';
 import 'package:luna/screens/diary/diary.dart';
+import 'package:luna/screens/diary/components/view/diary_list.dart';
 import 'package:luna/screens/analytics/analytics.dart';
 import 'package:luna/screens/calendary/calendary.dart';
 import 'package:luna/screens/profile/profile.dart';
@@ -18,6 +19,7 @@ class Navbar extends StatefulWidget {
 class _NavbarState extends State<Navbar> {
   int _selectedIndex = 0;
   final GlobalKey<DiaryState> _diaryKey = GlobalKey<DiaryState>(); 
+  final GlobalKey<CalendaryState> _calendaryKey = GlobalKey<CalendaryState>();
   late List<_NavbarItem> _navbarItems;
 
   @override
@@ -25,7 +27,7 @@ class _NavbarState extends State<Navbar> {
     super.initState();
     _navbarItems = [
       _NavbarItem(icon: Icons.menu_book_rounded, screen: Diary(key: _diaryKey)),
-      _NavbarItem(icon: Icons.calendar_month_rounded, screen: const Calendary()),
+      _NavbarItem(icon: Icons.calendar_month_rounded, screen: Calendary(key: _calendaryKey)),
       _NavbarItem(icon: Icons.analytics_rounded, screen: const Analytics()),
       _NavbarItem(icon: Icons.account_circle_rounded, screen: const Profile()),
     ];
@@ -49,11 +51,14 @@ class _NavbarState extends State<Navbar> {
       ),
       floatingActionButton: AddDiary(
         iconColor: iconColor,
-        onEntryAdded: () {
-          // Call the refresh method of Diary
+          onEntryAdded: () {
           if (_selectedIndex == 0) {
             _diaryKey.currentState?.refreshDiaryList();
           }
+          if (_selectedIndex == 1) {
+            _calendaryKey.currentState?.refreshCalendar();
+          }
+          
           setState(() {});
         },
       ),
@@ -64,7 +69,7 @@ class _NavbarState extends State<Navbar> {
 
   Widget _buildBottomNavigationBar(ThemeData theme, Color iconColor) {
     return Container(
-      height: 65.0, 
+      height: 60.0, 
       child: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 6.0,
@@ -76,7 +81,7 @@ class _NavbarState extends State<Navbar> {
           children: [
             _buildNavBarItem(_navbarItems[0], 0, iconColor),
             _buildNavBarItem(_navbarItems[1], 1, iconColor),
-            const SizedBox(width: 75),
+            const SizedBox(width: 65),
             _buildNavBarItem(_navbarItems[2], 2, iconColor),
             _buildNavBarItem(_navbarItems[3], 3, iconColor),
           ],
@@ -92,7 +97,7 @@ class _NavbarState extends State<Navbar> {
         child: Center(
           child: Icon(
             item.icon,
-            size: 25,
+            size: 27,
             color: _selectedIndex == index ? iconColor : Colors.grey[400],
           ),
         ),

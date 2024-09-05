@@ -64,7 +64,7 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
         document: Document.fromJson(jsonDecode(widget.entry!.content)),
         selection: const TextSelection.collapsed(offset: 0),
       );
-      _selectedMood = widget.entry!.mood; // Set the mood if editing
+      _selectedMood = widget.entry!.mood; 
     } else {
       // Creating new entry
       _selectedDate = DateTime.now();
@@ -106,6 +106,9 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
       return;
     }
 
+    // Si no se selecciona ningún estado de ánimo, establecer "predeterminado"
+    final mood = _selectedMood ?? 'x';
+
     final entry = DiaryEntry(
       id: widget.entry?.id,
       content: content,
@@ -113,7 +116,7 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
       songName: _songName,
       songUrl: _songUrl,
       imagePaths: _imagePaths,
-      mood: _selectedMood, 
+      mood: mood, 
     );
 
     try {

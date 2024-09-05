@@ -11,10 +11,10 @@ class DiaryList extends StatefulWidget {
   const DiaryList({Key? key}) : super(key: key);
 
   @override
-  _DiaryListState createState() => _DiaryListState();
+  DiaryListState createState() => DiaryListState();
 }
 
-class _DiaryListState extends State<DiaryList> {
+class DiaryListState extends State<DiaryList> {
   Future<List<DiaryEntry>>? _entriesFuture;
   String? _backgroundImagePath;
   final List<String> _presetImages = [
@@ -25,11 +25,11 @@ class _DiaryListState extends State<DiaryList> {
   @override
   void initState() {
     super.initState();
-    _loadEntries();
+    loadEntries();
     _loadBackgroundImage();
   }
 
-  void _loadEntries() {
+  void loadEntries() {
     setState(() {
       _entriesFuture = DiaryDatabaseHelper.instance.getAllEntries();
     });
@@ -204,8 +204,8 @@ class _DiaryListState extends State<DiaryList> {
                           : ScreenBackground.lightBackground,
                       child: DiaryCard(
                         entry: snapshot.data![index],
-                        onDelete: _loadEntries,
-                        onUpdate: _loadEntries,
+                        onDelete: loadEntries,
+                        onUpdate: loadEntries,
                       ),
                     ),
                     childCount: snapshot.data!.length,
