@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:luna/constants/colors.dart';
 
 class DayCell extends StatelessWidget {
   final DateTime day;
   final String? mood;
 
-  const DayCell({Key? key, required this.day, this.mood}) : super(key: key);
+  const DayCell({
+    Key? key,
+    required this.day,
+    this.mood,
+  }) : super(key: key);
 
   String _getMoodSvg(String mood) {
     switch (mood) {
@@ -32,22 +37,34 @@ class DayCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (mood != null) {
-      final svgPath = _getMoodSvg(mood!);
-      return Center(
-        child: SvgPicture.asset(
-          svgPath,
-          width: 30.0,
-          height: 30.0,
-        ),
-      );
-    } else {
-      return Center(
-        child: Text(
+    final hasMood = mood != null;
+    final theme = Theme.of(context);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (hasMood)
+          SvgPicture.asset(
+            _getMoodSvg(mood!),
+            width: 30.0,
+            height: 30.0,
+          )
+        else
+          Container(
+            width: 30.0,
+            height: 30.0,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: theme.brightness == Brightness.dark ?
+              CalendaryCell.darkCircle : CalendaryCell.lightCircle
+            ),
+          ),
+        SizedBox(height: 5.0), 
+        Text(
           '${day.day}',
-          style: TextStyle(fontSize: 14),
+          style: TextStyle(fontSize: 12), 
         ),
-      );
-    }
+      ],
+    );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:luna/screens/calendary/components/day_cell.dart';
 import 'package:intl/intl.dart';
+import 'package:luna/constants/colors.dart';
 
 class CalendarBody extends StatelessWidget {
   final ValueNotifier<DateTime?> selectedDay;
@@ -17,66 +18,80 @@ class CalendarBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: TableCalendar(
-        locale: "es_ES",
-        firstDay: DateTime.utc(2024, 1, 1),
-        lastDay: DateTime.utc(2030, 12, 31),
-        focusedDay: focusedDay.value!,
-        selectedDayPredicate: (day) {
-          return isSameDay(selectedDay.value, day);
-        },
-        onDaySelected: (selectedDay, focusedDay) {
-          this.selectedDay.value = selectedDay;
-          this.focusedDay.value = focusedDay;
-        },
-        onPageChanged: (focusedDay) {
-          this.focusedDay.value = focusedDay;
-        },
-        calendarStyle: const CalendarStyle(
-          outsideDaysVisible: false,
-        ),
-        headerStyle: const HeaderStyle(
-          formatButtonVisible: false,
-          titleCentered: true,
-          leftChevronIcon: Icon(Icons.chevron_left),
-          rightChevronIcon: Icon(Icons.chevron_right),
-        ),
-        daysOfWeekHeight: 31, 
-        daysOfWeekStyle: DaysOfWeekStyle(
-          dowTextFormatter: (date, locale) =>
-              DateFormat.E(locale).format(date)[0].toUpperCase(),
+    final theme = Theme.of(context);
+
+    return Wrap(
+      children: [
+        Container(
           decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Colors.grey.shade300,
-                width: 1.0,
+            color: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+            child: TableCalendar(
+              locale: "es_ES",
+              rowHeight: 70,
+              firstDay: DateTime.utc(2024, 1, 1),
+              lastDay: DateTime.utc(2030, 12, 31),
+              focusedDay: focusedDay.value!,
+              selectedDayPredicate: (day) {
+                return isSameDay(selectedDay.value, day);
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                this.selectedDay.value = selectedDay;
+                this.focusedDay.value = focusedDay;
+              },
+              onPageChanged: (focusedDay) {
+                this.focusedDay.value = focusedDay;
+              },
+              headerStyle: HeaderStyle(
+                formatButtonVisible: false,
+                titleCentered: true,
+                titleTextStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                titleTextFormatter: (date, locale) {
+                  String formattedMonth = DateFormat.MMMM(locale).format(date);
+                  String formattedYear = DateFormat.y(locale).format(date);
+                  return '$formattedMonth $formattedYear'.toUpperCase();
+                },
+                leftChevronIcon: Icon(Icons.arrow_left, size: 25),
+                rightChevronIcon: Icon(Icons.arrow_right, size: 25),
+              ),
+              daysOfWeekHeight: 50,
+              daysOfWeekStyle: DaysOfWeekStyle(
+                weekdayStyle: TextStyle(fontWeight: FontWeight.w700),
+                weekendStyle: TextStyle(fontWeight: FontWeight.w700),
+                dowTextFormatter: (date, locale) =>
+                    DateFormat.E(locale).format(date)[0].toUpperCase(),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: theme.brightness == Brightness.dark
+                          ? CalendarBodyColors.darkHorizontalLines
+                          : CalendarBodyColors.lightHorizontalLines,
+                      width: 1.0,
+                    ),
+                  ),
+                ),
+              ),
+              calendarBuilders: CalendarBuilders(
+                defaultBuilder: (context, day, focusedDay) {
+                  final mood = eventMoods[DateTime(day.year, day.month, day.day)];
+                  return DayCell(day: day, mood: mood);
+                },
+                selectedBuilder: (context, day, focusedDay) {
+                  final mood = eventMoods[DateTime(day.year, day.month, day.day)];
+                  return DayCell(day: day, mood: mood);
+                },
+                todayBuilder: (context, day, focusedDay) {
+                  final mood = eventMoods[DateTime(day.year, day.month, day.day)];
+                  return DayCell(day: day, mood: mood);
+                },
               ),
             ),
-          ),
+          )
         ),
-        calendarBuilders: CalendarBuilders(
-          dowBuilder: (context, day) {
-            final text = DateFormat.E().format(day)[0].toUpperCase();
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 10.0), 
-                child: Text(text),
-              ),
-            );
-          },
-          defaultBuilder: (context, day, focusedDay) {
-            return DayCell(day: day, mood: eventMoods[DateTime(day.year, day.month, day.day)]);
-          },
-          selectedBuilder: (context, day, focusedDay) {
-            return DayCell(day: day, mood: eventMoods[DateTime(day.year, day.month, day.day)]);
-          },
-          todayBuilder: (context, day, focusedDay) {
-            return DayCell(day: day, mood: eventMoods[DateTime(day.year, day.month, day.day)]);
-          },
-        ),
-      ),
+      ],
     );
   }
 }

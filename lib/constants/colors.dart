@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ScreenBackground {
-  static const Color lightBackground = Color(0x4DFFFFFF);
+  static const Color lightBackground = Colors.white38;
   static const Color darkBackground = Colors.black12;
 }
 
@@ -43,4 +43,16 @@ class SeparatorColors {
 class PinnedColors{
   static const Color lightPinned = Color(0xFFFFFFFF);
   static const Color darkPinned = Color(0xFF161616);
+}
+
+class CalendarBodyColors{
+  static const Color lightHorizontalLines = Color(0xFFE0E0E0);
+  static const Color lightVerticalLines = Color(0xFFEEEEEE);
+  static const Color darkHorizontalLines = Color(0xFF303030);
+  static const Color darkVerticalLines = Color(0xFF212121);
+}
+
+class CalendaryCell{
+  static const Color lightCircle = Color(0xFFF5F5F5);
+  static const Color darkCircle = Color(0xFF303030);
 }

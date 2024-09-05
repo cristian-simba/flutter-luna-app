@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:luna/constants/colors.dart';
 import 'package:luna/providers/icon_color_provider.dart';
 import 'package:luna/screens/diary/diary.dart';
-import 'package:luna/screens/diary/components/view/diary_list.dart';
 import 'package:luna/screens/analytics/analytics.dart';
 import 'package:luna/screens/calendary/calendary.dart';
 import 'package:luna/screens/profile/profile.dart';
@@ -17,6 +16,7 @@ class Navbar extends StatefulWidget {
 }
 
 class _NavbarState extends State<Navbar> {
+  final PageController _pageController = PageController();
   int _selectedIndex = 0;
   final GlobalKey<DiaryState> _diaryKey = GlobalKey<DiaryState>(); 
   final GlobalKey<CalendaryState> _calendaryKey = GlobalKey<CalendaryState>();
@@ -34,6 +34,10 @@ class _NavbarState extends State<Navbar> {
   }
 
   void _onItemTapped(int index) {
+    _pageController.jumpToPage(index);
+  }
+
+  void _onPageChanged(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -45,20 +49,20 @@ class _NavbarState extends State<Navbar> {
     final iconColor = Provider.of<IconColorProvider>(context).iconColor;
 
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: _onPageChanged,
         children: _navbarItems.map((item) => item.screen).toList(),
       ),
       floatingActionButton: AddDiary(
         iconColor: iconColor,
-          onEntryAdded: () {
+        onEntryAdded: () {
           if (_selectedIndex == 0) {
             _diaryKey.currentState?.refreshDiaryList();
           }
           if (_selectedIndex == 1) {
             _calendaryKey.currentState?.refreshCalendar();
           }
-          
           setState(() {});
         },
       ),
