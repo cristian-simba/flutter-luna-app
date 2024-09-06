@@ -1,74 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:luna/providers/icon_color_provider.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:luna/constants/colors.dart';
+import 'package:luna/utils/mood_utils.dart';
+import 'package:luna/utils/mood_colors.dart';
 
-class MoodModal extends StatelessWidget {
-  final String? selectedMood;
-  final Function(String) onMoodSelected;
+class MonthlyMoodPieChart extends StatelessWidget {
+  final Map<String, int> moodCounts;
 
-  MoodModal({Key? key, this.selectedMood, required this.onMoodSelected}) : super(key: key);
+  MonthlyMoodPieChart({required this.moodCounts});
 
   @override
   Widget build(BuildContext context) {
-    final iconColor = Provider.of<IconColorProvider>(context).iconColor;
-  
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+    final theme = Theme.of(context);
+
+    // Ordenar emociones por conteo y tomar las 5 principales
+    final sortedMoods = moodCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value)); // Orden descendente
+    final top5Moods = sortedMoods.take(5).toList();
+
+    final List<String> moodNames = top5Moods.map((entry) => entry.key).toList();
+    final List<int> counts = top5Moods.map((entry) => entry.value).toList();
+    final total = counts.reduce((sum, count) => sum + count);
+
+    return Card(
+      color: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Selecciona tu estado de ánimo',
+              'Tus principales emociones ',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             ),
-            SizedBox(height: 20),
-            // Use Row to display the mood options horizontally
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: _moodOptions.map((mood) => Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    onMoodSelected(mood);
-                    Navigator.of(context).pop();
-                  },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        _getMoodIcon(mood),
-                        color: selectedMood == mood ? iconColor : Colors.grey[400], size: 30,
+            SizedBox(height: 16),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  SizedBox(
+                    height: 175,
+                    width: 220,
+                    child: PieChart(
+                      PieChartData(
+                        borderData: FlBorderData(
+                          show: false,
+                        ),
+                        sectionsSpace: 0,
+                        centerSpaceRadius: 0,
+                        sections: List.generate(moodNames.length, (index) {
+                          return PieChartSectionData(
+                            color: getMoodColor(moodNames[index]),
+                            value: (counts[index] / total) * 100,
+                            radius: 75,
+                            showTitle: false
+                          );
+                        }),
                       ),
-                      SizedBox(height: 8),
-                      Text(mood, style: TextStyle(fontSize: 12),),
-                    ],
+                    ),
                   ),
-                ),
-              )).toList(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(moodNames.length, (index) {
+                      final percentage = (counts[index] / total) * 100;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 16,
+                              height: 16,
+                              color: getMoodColor(moodNames[index]),
+                            ),
+                            SizedBox(width: 5),
+                            SvgPicture.asset(
+                              getMoodSvg(moodNames[index]),
+                              height: 20,
+                              width: 20,
+                            ),
+                            SizedBox(width: 5),
+                            Text('${percentage.toStringAsFixed(1)}%', style: TextStyle(fontSize: 10),),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              ),
             ),
+            SizedBox(height: 16),
           ],
         ),
       ),
     );
   }
-
-  IconData _getMoodIcon(String mood) {
-    switch (mood) {
-      case 'Feliz':
-        return Icons.sentiment_very_satisfied_outlined;
-      case 'Triste':
-        return Icons.sentiment_dissatisfied;
-      case 'Enojado':
-        return Icons.sentiment_very_dissatisfied;
-      case 'Normal':
-        return Icons.sentiment_neutral;
-      default:
-        return Icons.sentiment_neutral;
-    }
-  }
-
-  List<String> get _moodOptions => ['Feliz', 'Triste', 'Enojado', 'Normal'];
 }

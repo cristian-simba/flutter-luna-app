@@ -56,3 +56,12 @@ class CalendaryCell{
   static const Color lightCircle = Color(0xFFF5F5F5);
   static const Color darkCircle = Color(0xFF303030);
 }
+
+class BarChartWidgetColors {
+  static const Color lightBorder = Color(0xFFF5F5F5);
+  static const Color darkBorder = Color(0xFF303030);
+  static const Color lightHorizontalLines = Color(0xFFE0E0E0);
+  static const Color lightVerticalLines = Color(0xFFEEEEEE);
+  static const Color darkHorizontalLines = Color(0xFF303030);
+  static const Color darkVerticalLines = Color(0xFF212121);
+}

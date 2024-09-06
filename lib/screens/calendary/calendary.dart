@@ -53,38 +53,30 @@ class CalendaryState extends State<Calendary> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      
-      appBar: AppBar(
-        title: Text('Estado de ánimo', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-        centerTitle: true,
-        backgroundColor: theme.brightness == Brightness.dark 
-          ? ScreenBackground.darkBackground 
-          : ScreenBackground.lightBackground,
-      ),
-      body: Container(
-        color: theme.brightness == Brightness.dark 
-            ? ScreenBackground.darkBackground 
-            : ScreenBackground.lightBackground,
-        child: SizedBox.expand(
-          child: ValueListenableBuilder<Map<DateTime, String?>>(
-            valueListenable: _eventMoods,
-            builder: (context, eventMoods, _) {
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: CalendarBody(
-                  selectedDay: _selectedDay,
-                  focusedDay: _focusedDay,
-                  eventMoods: eventMoods,
-                ),
-              );
-            },
+      body: SafeArea(
+        child: Container(
+          color: theme.brightness == Brightness.dark
+              ? ScreenBackground.darkBackground
+              : ScreenBackground.lightBackground,
+          child: SizedBox.expand(
+            child: ValueListenableBuilder<Map<DateTime, String?>>(
+              valueListenable: _eventMoods,
+              builder: (context, eventMoods, _) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: CalendarBody(
+                    selectedDay: _selectedDay,
+                    focusedDay: _focusedDay,
+                    eventMoods: eventMoods,
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),
     );
   }
+
 }
 
-      // appBar: AppBar(
-      //   title: Text('Calendario'),
-      // ),

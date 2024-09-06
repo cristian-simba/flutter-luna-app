@@ -4,6 +4,7 @@ import 'package:luna/screens/diary/components/diary_editor.dart';
 import 'package:luna/screens/diary/components/buttons/date_button.dart';
 import 'package:luna/screens/diary/components/buttons/song_of_the_day.dart';
 import 'package:luna/screens/diary/components/buttons/mood_modal.dart'; 
+import 'package:luna/utils/mood_utils.dart';
 import 'package:luna/models/diary_entry.dart';
 import 'package:luna/services/database.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -55,7 +56,6 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
 
   void _initializeData() {
     if (widget.entry != null) {
-      // Editing existing entry
       _selectedDate = widget.entry!.date;
       _songName = widget.entry!.songName ?? "";
       _songUrl = widget.entry!.songUrl ?? "";
@@ -66,7 +66,6 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
       );
       _selectedMood = widget.entry!.mood; 
     } else {
-      // Creating new entry
       _selectedDate = DateTime.now();
       _songName = "";
       _songUrl = "";
@@ -140,29 +139,6 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
     }
   }
 
-  String _getMoodSvg(String mood) {
-    switch (mood) {
-      case 'Normal':
-        return 'assets/svgs/neutral.svg';
-      case 'Feliz':
-        return 'assets/svgs/happy.svg';
-      case 'Triste':
-        return 'assets/svgs/sad.svg';
-      case 'Enojado':
-        return 'assets/svgs/angry.svg';
-      case 'Confundido':
-        return 'assets/svgs/confused.svg';
-      case 'Sorprendido':
-        return 'assets/svgs/surprised.svg';
-      case 'Cansado':
-        return 'assets/svgs/tired.svg';
-      case 'x':
-        return 'assets/svgs/predetermined.svg';
-      default:
-        return 'assets/svgs/predetermined.svg';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -204,7 +180,7 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
                         child: GestureDetector(
                           onTap: _showMoodModal,
                           child: SvgPicture.asset(
-                            _getMoodSvg(_selectedMood ?? 'x'),
+                            getMoodSvg(_selectedMood ?? 'x'),
                             width: 25,
                             height: 25,
                           ),

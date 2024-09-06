@@ -146,72 +146,70 @@ class DiaryListState extends State<DiaryList> {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {
-          return CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                scrolledUnderElevation: 0,
-                expandedHeight: 200.0,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      _backgroundImagePath != null
-                          ? (_backgroundImagePath!.startsWith('assets')
-                              ? Image.asset(_backgroundImagePath!, fit: BoxFit.cover)
-                              : Image.file(File(_backgroundImagePath!), fit: BoxFit.cover))
-                          : Image.asset(_presetImages[0], fit: BoxFit.cover),
-                      Positioned(
-                        right: 16,
-                        bottom: 16,
-                        child: _buildEditButton(),
-
-                      ),
-                    ],
-                  ),
-                ),
-                pinned: true,
-                backgroundColor: theme.brightness == Brightness.dark ? 
-                PinnedColors.darkPinned : PinnedColors.lightPinned,
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  color: theme.brightness == Brightness.dark
-                      ? ScreenBackground.darkBackground
-                      : ScreenBackground.lightBackground,
-                  padding: const EdgeInsets.only(left: 20, top: 15, bottom: 5),
-                  child: const Text(
-                    "2024",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
+          return SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  scrolledUnderElevation: 0,
+                  expandedHeight: 200.0,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        _backgroundImagePath != null
+                            ? (_backgroundImagePath!.startsWith('assets')
+                                ? Image.asset(_backgroundImagePath!, fit: BoxFit.cover)
+                                : Image.file(File(_backgroundImagePath!), fit: BoxFit.cover))
+                            : Image.asset(_presetImages[0], fit: BoxFit.cover),
+                        Positioned(
+                          right: 16,
+                          bottom: 16,
+                          child: _buildEditButton(),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
-              if (!snapshot.hasData || snapshot.data!.isEmpty)
                 SliverToBoxAdapter(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [Text('Empieza a escribir tu historia')],
-                  ),
-                )
-              else
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => Container(
-                      color: theme.brightness == Brightness.dark
-                          ? ScreenBackground.darkBackground
-                          : ScreenBackground.lightBackground,
-                      child: DiaryCard(
-                        entry: snapshot.data![index],
-                        onDelete: loadEntries,
-                        onUpdate: loadEntries,
+                  child: Container(
+                    color: theme.brightness == Brightness.dark
+                        ? ScreenBackground.darkBackground
+                        : ScreenBackground.lightBackground,
+                    padding: const EdgeInsets.only(left: 20, top: 15, bottom: 5),
+                    child: const Text(
+                      "2024",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    childCount: snapshot.data!.length,
                   ),
                 ),
-            ],
+                if (!snapshot.hasData || snapshot.data!.isEmpty)
+                  SliverToBoxAdapter(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [Text('Empieza a escribir tu historia')],
+                    ),
+                  )
+                else
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => Container(
+                        color: theme.brightness == Brightness.dark
+                            ? ScreenBackground.darkBackground
+                            : ScreenBackground.lightBackground,
+                        child: DiaryCard(
+                          entry: snapshot.data![index],
+                          onDelete: loadEntries,
+                          onUpdate: loadEntries,
+                        ),
+                      ),
+                      childCount: snapshot.data!.length,
+                    ),
+                  ),
+              ],
+            ),
           );
         }
       },

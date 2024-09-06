@@ -86,5 +86,37 @@ class DiaryDatabaseHelper {
       whereArgs: [id],
     );
   }
+  Future<Map<String, int>> getWeeklyMoodCounts() async {
+    final db = await database;
+    final now = DateTime.now();
+    final weekStart = now.subtract(Duration(days: now.weekday - 1));
+    final weekEnd = weekStart.add(Duration(days: 7));
+
+    final result = await db.rawQuery('''
+      SELECT mood, COUNT(*) as count
+      FROM diary_entries
+      WHERE date BETWEEN ? AND ?
+      GROUP BY mood
+      ORDER BY count DESC
+      LIMIT 5
+    ''', [weekStart.toIso8601String(), weekEnd.toIso8601String()]);
+
+    return Map.fromEntries(result.map((e) => MapEntry(e['mood'] as String, e['count'] as int)));
+  }
   
+  Future<Map<String, int>> getMonthlyMoodCounts() async {
+    final db = await database;
+    final now = DateTime.now();
+    final monthStart = DateTime(now.year, now.month, 1);
+    final nextMonthStart = DateTime(now.year, now.month + 1, 1);
+
+    final result = await db.rawQuery('''
+      SELECT mood, COUNT(*) as count
+      FROM diary_entries
+      WHERE date BETWEEN ? AND ?
+      GROUP BY mood
+    ''', [monthStart.toIso8601String(), nextMonthStart.toIso8601String()]);
+
+    return Map.fromEntries(result.map((e) => MapEntry(e['mood'] as String, e['count'] as int)));
+  }
 }
