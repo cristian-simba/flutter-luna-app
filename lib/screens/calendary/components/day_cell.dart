@@ -40,7 +40,7 @@ class DayCell extends StatelessWidget {
         SizedBox(height: 5.0), 
         Text(
           '${day.day}',
-          style: TextStyle(fontSize: 12), 
+          style: TextStyle(fontSize: 11), 
         ),
       ],
     );

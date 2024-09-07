@@ -6,14 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:luna/screens/diary/components/view/diary_card.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
 class DiaryList extends StatefulWidget {
   const DiaryList({Key? key}) : super(key: key);
-
   @override
   DiaryListState createState() => DiaryListState();
 }
-
 class DiaryListState extends State<DiaryList> {
   Future<List<DiaryEntry>>? _entriesFuture;
   String? _backgroundImagePath;
@@ -21,36 +18,30 @@ class DiaryListState extends State<DiaryList> {
     'assets/images/preset_background_1.jpg',
     'assets/images/preset_background_2.jpg',
   ];
-
   @override
   void initState() {
     super.initState();
     loadEntries();
     _loadBackgroundImage();
   }
-
   void loadEntries() {
     setState(() {
       _entriesFuture = DiaryDatabaseHelper.instance.getAllEntries();
     });
   }
-
   Future<void> _loadBackgroundImage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _backgroundImagePath = prefs.getString('background_image_path') ?? _presetImages[0];
     });
   }
-
   Future<void> _pickBackgroundImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
     if (pickedFile != null) {
       await _saveBackgroundImage(pickedFile.path);
     }
   }
-
   Future<void> _saveBackgroundImage(String path) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('background_image_path', path);
@@ -58,7 +49,6 @@ class DiaryListState extends State<DiaryList> {
       _backgroundImagePath = path;
     });
   }
-
   void _showBackgroundOptions() {
     showModalBottomSheet(
       context: context,
@@ -133,11 +123,9 @@ class DiaryListState extends State<DiaryList> {
       },
     );
   }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return FutureBuilder<List<DiaryEntry>>(
       future: _entriesFuture,
       builder: (context, snapshot) {
@@ -146,76 +134,78 @@ class DiaryListState extends State<DiaryList> {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {
-          return SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  scrolledUnderElevation: 0,
-                  expandedHeight: 200.0,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        _backgroundImagePath != null
-                            ? (_backgroundImagePath!.startsWith('assets')
-                                ? Image.asset(_backgroundImagePath!, fit: BoxFit.cover)
-                                : Image.file(File(_backgroundImagePath!), fit: BoxFit.cover))
-                            : Image.asset(_presetImages[0], fit: BoxFit.cover),
-                        Positioned(
-                          right: 16,
-                          bottom: 16,
-                          child: _buildEditButton(),
-                        ),
-                      ],
+          return CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                scrolledUnderElevation: 0,
+                expandedHeight: 200.0,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      _backgroundImagePath != null
+                          ? (_backgroundImagePath!.startsWith('assets')
+                              ? Image.asset(_backgroundImagePath!, fit: BoxFit.cover)
+                              : Image.file(File(_backgroundImagePath!), fit: BoxFit.cover))
+                          : Image.asset(_presetImages[0], fit: BoxFit.cover),
+                      Positioned(
+                        right: 16,
+                        bottom: 16,
+                        child: _buildEditButton(),
+
+                      ),
+                    ],
+                  ),
+                ),
+                pinned: true,
+                floating: false,
+                backgroundColor: theme.brightness == Brightness.dark ? 
+                PinnedColors.darkPinned : PinnedColors.lightPinned,
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  color: theme.brightness == Brightness.dark
+                      ? ScreenBackground.darkBackground
+                      : ScreenBackground.lightBackground,
+                  padding: const EdgeInsets.only(left: 20, top: 15, bottom: 5),
+                  child: const Text(
+                    "2024",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
+              ),
+              if (!snapshot.hasData || snapshot.data!.isEmpty)
                 SliverToBoxAdapter(
-                  child: Container(
-                    color: theme.brightness == Brightness.dark
-                        ? ScreenBackground.darkBackground
-                        : ScreenBackground.lightBackground,
-                    padding: const EdgeInsets.only(left: 20, top: 15, bottom: 5),
-                    child: const Text(
-                      "2024",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [Text('Empieza a escribir tu historia')],
+                  ),
+                )
+              else
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => Container(
+                      color: theme.brightness == Brightness.dark
+                          ? ScreenBackground.darkBackground
+                          : ScreenBackground.lightBackground,
+                      child: DiaryCard(
+                        entry: snapshot.data![index],
+                        onDelete: loadEntries,
+                        onUpdate: loadEntries,
                       ),
                     ),
+                    childCount: snapshot.data!.length,
                   ),
                 ),
-                if (!snapshot.hasData || snapshot.data!.isEmpty)
-                  SliverToBoxAdapter(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text('Empieza a escribir tu historia')],
-                    ),
-                  )
-                else
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) => Container(
-                        color: theme.brightness == Brightness.dark
-                            ? ScreenBackground.darkBackground
-                            : ScreenBackground.lightBackground,
-                        child: DiaryCard(
-                          entry: snapshot.data![index],
-                          onDelete: loadEntries,
-                          onUpdate: loadEntries,
-                        ),
-                      ),
-                      childCount: snapshot.data!.length,
-                    ),
-                  ),
-              ],
-            ),
+            ],
           );
         }
       },
     );
   }
-
   Widget _buildEditButton() {
     return Hero(
       tag: 'editBackgroundFAB',

@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:luna/constants/colors.dart';
+import 'package:luna/constants/analytics_colors.dart';
 
-Color getMoodColor(String mood) {
-  switch (mood) {
-    case 'Normal':
-      return Color(0xFFFFE0B5); // Light Orange
-    case 'Feliz':
-      return Color(0xFFFFC107); // Amber
-    case 'Triste':
-      return Color.fromARGB(255, 79, 141, 255); // Golden Yellow
-    case 'Enojado':
-      return Color.fromARGB(255, 255, 92, 77); // Deep Orange
-    case 'Confundido':
-      return Color(0xFFFF8A65); // Deep Peach
-    case 'Sorprendido':
-      return Color(0xFFFFA07A); // Light Salmon
-    case 'Cansado':
-      return Color(0xFFFFD180); // Light Orange
-    case 'x':
-      return Color(0xFFFFE0B5); // Light Orange (representa "sin palabras")
-    default:
-      return Color(0xFFB68989); // Color de reserva
+class MoodColorSelector {
+  static Color getMoodColor(String mood, Color iconColor) {
+    String palette;
+    if (iconColor == IconColors.primaryIcon) {
+      palette = 'primary';
+    } else if (iconColor == IconColors.secondaryIcon) {
+      palette = 'secondary';
+    } else if (iconColor == IconColors.thirdIcon) {
+      palette = 'third';
+    } else {
+      palette = 'default';
+    }
+
+    return MoodColors.palettes[palette]?[mood] ?? MoodColors.palettes[palette]!['default']!;
   }
 }

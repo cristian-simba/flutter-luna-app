@@ -101,7 +101,7 @@ class _NavbarState extends State<Navbar> {
         child: Center(
           child: Icon(
             item.icon,
-            size: 27,
+            size: 25,
             color: _selectedIndex == index ? iconColor : Colors.grey[400],
           ),
         ),

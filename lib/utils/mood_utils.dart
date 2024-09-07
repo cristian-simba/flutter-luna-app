@@ -1,4 +1,4 @@
-String getMoodSvg(String mood) {
+String getMoodSvg(String? mood) {
   switch (mood) {
     case 'Normal':
       return 'assets/svgs/neutral.svg';

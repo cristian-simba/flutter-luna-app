@@ -31,7 +31,7 @@ class CalendarBody extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
             child: TableCalendar(
               locale: "es_ES",
-              rowHeight: 70,
+              rowHeight: 65,
               firstDay: DateTime.utc(2024, 1, 1),
               lastDay: DateTime.utc(2030, 12, 31),
               focusedDay: focusedDay.value!,
@@ -48,19 +48,20 @@ class CalendarBody extends StatelessWidget {
               headerStyle: HeaderStyle(
                 formatButtonVisible: false,
                 titleCentered: true,
-                titleTextStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                titleTextStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
                 titleTextFormatter: (date, locale) {
                   String formattedMonth = DateFormat.MMMM(locale).format(date);
                   String formattedYear = DateFormat.y(locale).format(date);
-                  return '$formattedMonth $formattedYear'.toUpperCase();
+                  String formattedDate = '$formattedMonth $formattedYear';
+                  return formattedDate.split(' ').map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase()).join(' ');
                 },
                 leftChevronIcon: Icon(Icons.arrow_left, size: 25),
                 rightChevronIcon: Icon(Icons.arrow_right, size: 25),
               ),
               daysOfWeekHeight: 50,
               daysOfWeekStyle: DaysOfWeekStyle(
-                weekdayStyle: TextStyle(fontWeight: FontWeight.w700),
-                weekendStyle: TextStyle(fontWeight: FontWeight.w700),
+                weekdayStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
+                weekendStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
                 dowTextFormatter: (date, locale) =>
                     DateFormat.E(locale).format(date)[0].toUpperCase(),
                 decoration: BoxDecoration(

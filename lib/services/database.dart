@@ -119,4 +119,6 @@ class DiaryDatabaseHelper {
 
     return Map.fromEntries(result.map((e) => MapEntry(e['mood'] as String, e['count'] as int)));
   }
+
+  
 }

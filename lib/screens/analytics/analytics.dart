@@ -3,6 +3,8 @@ import 'package:luna/screens/analytics/components/weekly_mood.dart';
 import 'package:luna/screens/analytics/components/montly_mood.dart';
 import 'package:luna/services/database.dart';
 import 'package:luna/constants/colors.dart';
+import 'package:provider/provider.dart';
+import 'package:luna/providers/icon_color_provider.dart'; 
 
 class Analytics extends StatefulWidget {
   const Analytics({super.key});
@@ -15,7 +17,6 @@ class _AnalyticsState extends State<Analytics> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -24,9 +25,13 @@ class _AnalyticsState extends State<Analytics> {
               : ScreenBackground.lightBackground,
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: Text("Análisis", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),),
+                  ),
                   FutureBuilder<Map<String, int>>(
                     future: DiaryDatabaseHelper.instance.getWeeklyMoodCounts(),
                     builder: (context, snapshot) {

@@ -63,12 +63,20 @@ class CalendaryState extends State<Calendary> {
               valueListenable: _eventMoods,
               builder: (context, eventMoods, _) {
                 return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child: CalendarBody(
-                    selectedDay: _selectedDay,
-                    focusedDay: _focusedDay,
-                    eventMoods: eventMoods,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 17),
+                        child: Text("Seguimiento de ánimo", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),),
+                      ),
+                       CalendarBody(
+                        selectedDay: _selectedDay,
+                        focusedDay: _focusedDay,
+                        eventMoods: eventMoods,
+                      ),
+                    ],
+                  )
                 );
               },
             ),
