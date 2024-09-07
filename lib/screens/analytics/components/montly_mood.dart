@@ -5,6 +5,7 @@ import 'package:luna/constants/colors.dart';
 import 'package:luna/utils/mood_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:luna/providers/icon_color_provider.dart';
+
 class MonthlyMoodPieChart extends StatefulWidget {
   final Map<String, int> moodCounts;
 
@@ -37,8 +38,8 @@ class _MonthlyMoodPieChartState extends State<MonthlyMoodPieChart> with SingleTi
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final iconColorProvider = Provider.of<IconColorProvider>(context);
-
     final sortedMoods = widget.moodCounts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value)); // Orden descendente
     final top5Moods = sortedMoods.take(5).toList();
@@ -53,6 +54,7 @@ class _MonthlyMoodPieChartState extends State<MonthlyMoodPieChart> with SingleTi
         return Opacity(
           opacity: _animation.value,
           child: Card(
+            color: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
@@ -74,11 +76,10 @@ class _MonthlyMoodPieChartState extends State<MonthlyMoodPieChart> with SingleTi
                         centerSpaceRadius: 0,
                         sections: List.generate(moodNames.length, (index) {
                           final color = iconColorProvider.getMoodColor(moodNames[index]);
-                          print('Mood: ${moodNames[index]}, Color: $color');
                           return PieChartSectionData(
                             color: color,
                             value: (counts[index] / total) * 100 * _animation.value,
-                            radius: 75 * _animation.value,
+                            radius: 65 * _animation.value,
                             showTitle: false,
                           );
                         }),

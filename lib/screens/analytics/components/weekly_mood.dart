@@ -114,6 +114,7 @@ class _WeeklyMoodState extends State<WeeklyMood> with SingleTickerProviderStateM
                               rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                             ),
                             borderData: FlBorderData(
+                              show: false,
                               border: Border.all(
                                 color: theme.brightness == Brightness.dark ? 
                                 BarChartWidgetColors.darkBorder : BarChartWidgetColors.lightBorder,
@@ -125,7 +126,7 @@ class _WeeklyMoodState extends State<WeeklyMood> with SingleTickerProviderStateM
                                 return FlLine(
                                   color: theme.brightness == Brightness.dark ? 
                                 BarChartWidgetColors.darkHorizontalLines : BarChartWidgetColors.lightHorizontalLines,
-                                  strokeWidth: 1,
+                                  strokeWidth: 0,
                                   dashArray: [5, 5],
                                 );
                               },
@@ -133,7 +134,7 @@ class _WeeklyMoodState extends State<WeeklyMood> with SingleTickerProviderStateM
                                 return FlLine(
                                   color: theme.brightness == Brightness.dark ? 
                                 BarChartWidgetColors.darkVerticalLines : BarChartWidgetColors.lightVerticalLines,
-                                  strokeWidth: 1,
+                                  strokeWidth: 0.5,
                                   dashArray: [5, 5],
                                 );
                               },

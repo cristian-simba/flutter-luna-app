@@ -120,5 +120,31 @@ class DiaryDatabaseHelper {
     return Map.fromEntries(result.map((e) => MapEntry(e['mood'] as String, e['count'] as int)));
   }
 
-  
+  Future<Map<String, int>> getAnnualMoodCounts() async {
+    final db = await database;
+    final now = DateTime.now();
+    final yearStart = DateTime(now.year, 1, 1);
+    final yearEnd = DateTime(now.year + 1, 1, 1);
+
+    final result = await db.rawQuery('''
+      SELECT mood, COUNT(*) as count
+      FROM diary_entries
+      WHERE date BETWEEN ? AND ?
+      GROUP BY mood
+    ''', [yearStart.toIso8601String(), yearEnd.toIso8601String()]);
+
+    // Crear un mapa con valores predeterminados para todas las emociones posibles
+    final moods = ['Feliz', 'Triste', 'Enojado', 'Neutral', 'Sorprendido', 'Aburrido'];
+    final moodCounts = {for (var mood in moods) mood: 0};
+
+    // Actualizar el mapa con los resultados de la consulta
+    for (var row in result) {
+      final mood = row['mood'] as String;
+      final count = row['count'] as int;
+      moodCounts[mood] = count;
+    }
+
+    return moodCounts;
+  }
+
 }
