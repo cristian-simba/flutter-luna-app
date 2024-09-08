@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ScreenBackground {
-  static const Color lightBackground = Colors.white10;
-  static const Color darkBackground = Colors.black12;
+  static const Color lightBackground = Colors.white30;
+  static const Color darkBackground = Colors.black45;
 }
 
 class NavbarBackground {

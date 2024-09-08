@@ -54,6 +54,7 @@ class _MonthlyMoodPieChartState extends State<MonthlyMoodPieChart> with SingleTi
         return Opacity(
           opacity: _animation.value,
           child: Card(
+            elevation: 0,
             color: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
             child: Padding(
               padding: const EdgeInsets.all(10.0),

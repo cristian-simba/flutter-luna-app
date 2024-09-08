@@ -51,6 +51,7 @@ class _AnnualMoodState extends State<AnnualMood> with SingleTickerProviderStateM
         return Opacity(
           opacity: _animation.value,
           child: Card(
+            elevation: 0,
             color: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
             child: Padding(
               padding: const EdgeInsets.only(top: 20.0, bottom: 20.0, left: 10, right: 15),
@@ -148,6 +149,6 @@ class _AnnualMoodState extends State<AnnualMood> with SingleTickerProviderStateM
   // Devuelve una lista de todas las emociones posibles
   List<String> getAllMoods() {
     // Reemplaza esto con la lista completa de emociones posibles
-    return ['Feliz', 'Triste', 'Enojado', 'Neutral', 'Sorprendido', 'Aburrido'];
+    return ['Feliz', 'Triste', 'Enojado', 'Sorprendido', 'x', 'Cansado', 'Normal'];
   }
 }

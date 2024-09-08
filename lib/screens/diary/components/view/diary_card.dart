@@ -126,13 +126,14 @@ class DiaryCard extends StatelessWidget {
       );
 
       return Card(
-        margin: const EdgeInsets.symmetric(vertical:7, horizontal: 16),
+        elevation: 0.25,
+        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 16),
         color: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(5)), 
-        ),
+        // shape: const RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.all(Radius.circular(5)), 
+        // ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -182,7 +183,7 @@ class DiaryCard extends StatelessWidget {
                 ),
               ],
 
-              const SizedBox(height: 8),
+              const SizedBox(height:5),
               SizedBox(
                 child: QuillEditor.basic(
                   controller: _controller,
@@ -205,7 +206,7 @@ class DiaryCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 10),
               ImagePreview(imagePaths: entry.imagePaths),
             ],
           ),

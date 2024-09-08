@@ -3,6 +3,9 @@ import 'package:luna/widgets/theme_switcher.dart';
 import 'package:provider/provider.dart';
 import 'package:luna/providers/icon_color_provider.dart';
 import 'package:luna/widgets/icon_color_selector.dart';
+import 'package:luna/services/database.dart';
+import 'package:luna/constants/colors.dart';
+import 'package:luna/screens/profile/components/count_cards.dart';  
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -12,35 +15,129 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  int _diaryCount = 0;
+  int _photoCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCounts();
+  }
+
+  Future<void> _loadCounts() async {
+    final diaryEntries = await DiaryDatabaseHelper.instance.getAllEntries();
+    int totalPhotos = 0;
+    for (var entry in diaryEntries) {
+      if (entry.imagePaths != null) {
+        totalPhotos += entry.imagePaths!.length;
+      }
+    }
+    setState(() {
+      _diaryCount = diaryEntries.length;
+      _photoCount = totalPhotos;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final backgroundColor = theme.brightness == Brightness.dark 
+              ? ScreenBackground.darkBackground 
+              : ScreenBackground.lightBackground;
+    final cardColor = theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard;
+    final separatorColor = theme.brightness == Brightness.dark ? SeparatorColors.darkSeparator : SeparatorColors.lightSeparator;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        actions: [
-          const ThemeSwitcher(),
-        ],
-      ),
-      body: Center(
-        child: Consumer<IconColorProvider>(
-          builder: (context, iconColorProvider, child) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+      body: SafeArea(
+        child: Container(
+          color: backgroundColor,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: ListView(
               children: [
-                const Text('Color de iconos actual:'),
-                Icon(Icons.circle, color: iconColorProvider.iconColor, size: 50),
-                const SizedBox(height: 20),
-                const Text('Selecciona un nuevo color:'),
-                IconColorSelector(
-                  onColorSelected: (Color color) {
-                    iconColorProvider.updateIconColor(color);
-                  },
+                topTitle(),
+                cardTitle(),
+                CountCards(diaryCount: _diaryCount, photoCount: _photoCount),
+                const SizedBox(height: 4),
+                Card(
+                  color: cardColor,
+                  elevation: 0.25,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    child: Column(
+                      children: [
+                        ThemeSwitcher(),
+                        Divider(height: 1, color: separatorColor,),
+                        colorSelector()
+                      ],
+                    )
+                  )
                 ),
+                const SizedBox(height: 20),
+                
               ],
-            );
-          },
-        ),
+            ),
+          ),
+        )
       ),
+    );
+  }
+
+  Padding topTitle() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 15),
+      child: Center(
+        child: Text(
+        "Mis datos",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      )
+    );
+  }
+  
+  Padding cardTitle() {
+    return const Padding(
+      padding: EdgeInsets.only(bottom: 10, left: 6), 
+      child: Text("Mis registros", style: TextStyle(fontSize: 14 ,fontWeight: FontWeight.w700),
+      ),
+    );
+  }
+
+  Consumer<IconColorProvider> colorSelector() {
+    return Consumer<IconColorProvider>(
+      builder: (context, iconColorProvider, child) {
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 2), 
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Colores de los iconos'),
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Selecciona un nuevo color'),
+                        content: IconColorSelector(
+                          onColorSelected: (Color color) {
+                            iconColorProvider.updateIconColor(color);
+                            Navigator.of(context).pop(); 
+                          },
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Icon(Icons.circle, color: iconColorProvider.iconColor, size: 25),
+              ),
+            ],
+          )
+        );
+      },
     );
   }
 }

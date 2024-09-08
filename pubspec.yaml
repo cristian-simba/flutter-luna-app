@@ -85,6 +85,9 @@ flutter:
     - assets/svgs/surprised.svg
     - assets/svgs/tired.svg
 
+    - assets/svgs/book.svg
+    - assets/svgs/galery.svg
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

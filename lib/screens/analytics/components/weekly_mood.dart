@@ -52,6 +52,7 @@ class _WeeklyMoodState extends State<WeeklyMood> with SingleTickerProviderStateM
           child: Wrap(
             children: [
               Card(
+                elevation: 0,
                 color: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
                 child: Padding(
                   padding: const EdgeInsets.all(25.0),
@@ -64,7 +65,7 @@ class _WeeklyMoodState extends State<WeeklyMood> with SingleTickerProviderStateM
                       ),
                       SizedBox(height: 16),
                       SizedBox(
-                        height: 150, 
+                        height: 125, 
                         child: BarChart(
                           BarChartData(
                             alignment: BarChartAlignment.spaceEvenly,
