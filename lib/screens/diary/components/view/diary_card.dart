@@ -1,17 +1,18 @@
 import 'dart:convert';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:luna/constants/colors.dart';
-import 'package:flutter_quill/flutter_quill.dart';
 import 'package:luna/models/diary_entry.dart';
-import 'package:luna/utils/date_formatter.dart';
-import 'package:luna/screens/diary/components/view/image_preview.dart';
 import 'package:luna/services/database.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:luna/constants/colors.dart';
+import 'package:provider/provider.dart';
 import 'package:luna/providers/icon_color_provider.dart';
-import 'package:luna/screens/diary/components/insert_diary.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:luna/utils/mood_utils.dart';
+import 'package:luna/utils/date_formatter.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:luna/screens/diary/components/view/audio_player.dart';
+import 'package:luna/screens/diary/components/view/show_options.dart';
+import 'package:luna/screens/diary/components/view/image_preview.dart';
 
 class DiaryCard extends StatelessWidget {
   final DiaryEntry entry;
@@ -25,96 +26,11 @@ class DiaryCard extends StatelessWidget {
     required this.onUpdate,
   }) : super(key: key);
 
-
-  Future<void> _launchSongUrl(BuildContext context) async {
-    final Uri url = Uri.parse(entry.songUrl!);
-    await launchUrl(url);
-  }
-
-  Future<void> _deleteEntry(BuildContext context) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirmar eliminación'),
-          content: const Text('¿Estás seguro de que quieres eliminar este diario?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancelar'),
-              onPressed: () => Navigator.of(context).pop(false),
-            ),
-            TextButton(
-              child: const Text('Eliminar'),
-              onPressed: () => Navigator.of(context).pop(true),
-            ),
-          ],
-        );
-      },
-    );
-
-  if (confirmed == true) {
-      await DiaryDatabaseHelper.instance.deleteEntry(entry.id!);
-      onDelete();
-    }
-  }
-
-
-  void _showOptions(BuildContext context) {
-    final theme = Theme.of(context);
-
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.zero),
-      ),
-      builder: (BuildContext context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                leading: const Icon(Icons.edit, size: 18),
-                title: const Text('Editar', style: TextStyle(fontSize: 16),),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditDiaryScreen(
-                        entry: entry,
-                        onEntryUpdated: () {
-                          onUpdate();
-                        },
-                      ),
-                    ),
-                  );
-                }
-              ),
-              Divider(
-                height: 1, 
-                color: theme.brightness == Brightness.dark
-                  ? SeparatorColors.darkSeparator
-                  : SeparatorColors.lightSeparator
-              ),
-              ListTile(
-                leading: const Icon(Icons.delete, color: Colors.red, size: 18,),
-                title: const Text('Eliminar', style: TextStyle(color: Colors.red, fontSize: 16)),
-                onTap: () {
-                  Navigator.pop(context);
-                  _deleteEntry(context);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final iconColor = Provider.of<IconColorProvider>(context).iconColor;
+    final cardColor = theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard;
 
     try {
       final jsonMap = jsonDecode(entry.content);
@@ -128,84 +44,23 @@ class DiaryCard extends StatelessWidget {
       return Card(
         elevation: 0.25,
         margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 16),
-        color: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
-        // shape: const RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.all(Radius.circular(5)), 
-        // ),
+        color: cardColor,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        formatDate(entry.date),
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(width: 10),
-                      SvgPicture.asset(
-                        getMoodSvg(entry.mood),
-                        width: 18,
-                        height: 18,
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.more_vert, size: 20),
-                    onPressed: () => _showOptions(context),
-                  ),
-                ],
-              ),
-
+              dayAndMood(context),
+              // if (entry.songUrl != null && entry.songUrl!.isNotEmpty)
+              //   YouTubeAudioPlayer(
+              //     youtubeUrl: entry.songUrl!,
+              //     songName: entry.songName ?? 'Canción del día',
+              //   ),
               if (entry.songUrl != null && entry.songUrl!.isNotEmpty) ...[
-                Row(
-                  children: [
-                    Icon(Icons.play_circle, size: 18, color: iconColor),
-                    const SizedBox(width: 5),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => _launchSongUrl(context),
-                        child: Text(
-                          entry.songName ?? 'Canción del día',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: iconColor,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-
-              const SizedBox(height:5),
-              SizedBox(
-                child: QuillEditor.basic(
-                  controller: _controller,
-                  configurations: QuillEditorConfigurations(
-                    showCursor: false,
-                    customStyles: DefaultStyles(
-                      paragraph: DefaultTextBlockStyle(
-                        TextStyle(
-                          fontSize: 14,
-                          height: 1.5,
-                          wordSpacing: 1,
-                          color: theme.brightness == Brightness.dark ? Colors.white : Colors.black
-                        ),
-                        HorizontalSpacing.zero,
-                        VerticalSpacing.zero,
-                        VerticalSpacing(20, 20),
-                        null,
-                      ),
-                    )
-                  ),
-                ),
-              ),
+                audioPlayer(iconColor, context),
+              ],              
+              const SizedBox(height: 5),
+              textEditor(_controller, theme),
               const SizedBox(height: 10),
               ImagePreview(imagePaths: entry.imagePaths),
             ],
@@ -223,4 +78,107 @@ class DiaryCard extends StatelessWidget {
       );
     }
   }
+
+  Row audioPlayer(Color iconColor, BuildContext context) {
+    return Row(
+      children: [
+        Icon(Icons.play_circle, size: 18, color: iconColor),
+        const SizedBox(width: 5),
+        Expanded(
+          child: GestureDetector(
+            onTap: () => _launchSongUrl(context),
+            child: Text(
+              entry.songName ?? 'Canción del día',
+              style: TextStyle(
+                fontSize: 14,
+                color: iconColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Row dayAndMood(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Text(
+              formatDate(entry.date),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(width: 10),
+            SvgPicture.asset(
+              getMoodSvg(entry.mood),
+              width: 18,
+              height: 18,
+            ),
+          ],
+        ),
+        IconButton(
+          icon: const Icon(Icons.more_vert, size: 20),
+          onPressed: () => _showOptions(context),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _launchSongUrl(BuildContext context) async {
+    final Uri url = Uri.parse(entry.songUrl!);
+    await launchUrl(url);
+  }
+
+  SizedBox textEditor(QuillController _controller, ThemeData theme) {
+    return SizedBox(
+      child: QuillEditor.basic(
+        controller: _controller,
+        configurations: QuillEditorConfigurations(
+          showCursor: false,
+          customStyles: DefaultStyles(
+            paragraph: DefaultTextBlockStyle(
+              TextStyle(
+                fontSize: 14,
+                height: 1.5,
+                wordSpacing: 1,
+                color: theme.brightness == Brightness.dark ? Colors.white : Colors.black
+              ),
+              HorizontalSpacing.zero,
+              VerticalSpacing.zero,
+              VerticalSpacing(20, 20),
+              null,
+            ),
+          )
+        ),
+      ),
+    );
+  }
+
+  Future<void> _deleteEntry(BuildContext context) async {
+    final confirmed = await showDeleteConfirmationDialog(context);
+    if (confirmed) {
+      await DiaryDatabaseHelper.instance.deleteEntry(entry.id!);
+      onDelete();
+    }
+  }
+
+  void _showOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+      ),
+      builder: (BuildContext context) {
+        return DiaryCardOptions(
+          entry: entry,
+          onDelete: () => _deleteEntry(context),
+          onUpdate: onUpdate,
+        );
+      },
+    );
+  }
+
 }
