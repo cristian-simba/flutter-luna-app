@@ -106,7 +106,7 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
     }
 
     // Si no se selecciona ningún estado de ánimo, establecer "predeterminado"
-    final mood = _selectedMood ?? 'x';
+    final mood = _selectedMood ?? 'Normal';
 
     final entry = DiaryEntry(
       id: widget.entry?.id,

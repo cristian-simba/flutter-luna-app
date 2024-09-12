@@ -87,6 +87,11 @@ class DiaryDatabaseHelper {
     );
   }
 
+  Future<int> getDiaryCount() async {
+    final db = await database;
+    return Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM diary_entries')) ?? 0;
+  }
+
   Future<Map<String, int>> getWeeklyMoodCounts() async {
     final db = await database;
     final now = DateTime.now();
@@ -134,7 +139,7 @@ class DiaryDatabaseHelper {
       GROUP BY mood
     ''', [yearStart.toIso8601String(), yearEnd.toIso8601String()]);
 
-    final moods = ['Feliz', 'Triste', 'Enojado', 'Sorprendido', 'x', 'Cansado', 'Normal'];
+    final moods = ['Feliz', 'Triste', 'Enojado', 'Sorprendido', 'Cansado', 'Normal', 'Confundido'];
     final moodCounts = {for (var mood in moods) mood: 0};
 
     for (var row in result) {

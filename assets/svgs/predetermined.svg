@@ -1,2 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-<svg width="800px" height="800px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--twemoji" preserveAspectRatio="xMidYMid meet"><path fill="#FFCC4D" d="M36 18c0 9.941-8.059 18-18 18c-9.94 0-18-8.059-18-18C0 8.06 8.06 0 18 0c9.941 0 18 8.06 18 18"></path><ellipse fill="#664500" cx="11.5" cy="16.5" rx="2.5" ry="3.5"></ellipse><ellipse fill="#664500" cx="24.5" cy="16.5" rx="2.5" ry="3.5"></ellipse></svg>
+<svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_i_1_58)">
+<circle cx="12.5" cy="12.5" r="12.5" fill="#E9E7E7"/>
+<circle cx="3" cy="12" r="1" fill="#CCCDCF"/>
+<circle cx="7.5" cy="5.5" r="1.5" fill="#CCCDCF"/>
+<circle cx="9" cy="19" r="3" fill="#CCCDCF"/>
+<circle cx="18" cy="5" r="1" fill="#CCCDCF"/>
+<circle cx="18" cy="20" r="1" fill="#CCCDCF"/>
+<circle cx="20" cy="14" r="2" fill="#CCCDCF"/>
+<rect x="8" y="8" width="3" height="6" rx="1.5" fill="#303F41"/>
+<rect x="14" y="8" width="3" height="6" rx="1.5" fill="#303F41"/>
+</g>
+<defs>
+<filter id="filter0_i_1_58" x="0" y="0" width="28" height="25" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="3"/>
+<feGaussianBlur stdDeviation="1.5"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_1_58"/>
+</filter>
+</defs>
+</svg>

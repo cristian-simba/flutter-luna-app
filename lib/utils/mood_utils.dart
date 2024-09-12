@@ -1,7 +1,7 @@
 String getMoodSvg(String? mood) {
   switch (mood) {
     case 'Normal':
-      return 'assets/svgs/neutral.svg';
+      return 'assets/svgs/predetermined.svg';
     case 'Feliz':
       return 'assets/svgs/happy.svg';
     case 'Triste':
@@ -14,8 +14,8 @@ String getMoodSvg(String? mood) {
       return 'assets/svgs/surprised.svg';
     case 'Cansado':
       return 'assets/svgs/tired.svg';
-    case 'x':
-      return 'assets/svgs/predetermined.svg';
+    // case 'x':
+    //   return 'assets/svgs/predetermined.svg';
     default:
       return 'assets/svgs/predetermined.svg';
   }

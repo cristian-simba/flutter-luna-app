@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:luna/utils/mood_utils.dart';
 
 class MoodModal extends StatelessWidget {
   final String? selectedMood;
@@ -38,7 +38,7 @@ class MoodModal extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       SvgPicture.asset(
-                        _getMoodSvg(mood),
+                        getMoodSvg(mood),
                         width: 25,
                         height: 25,
                       ),
@@ -66,14 +66,14 @@ class MoodModal extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       SvgPicture.asset(
-                        _getMoodSvg(mood),
+                        getMoodSvg(mood),
                         width: 25,
                         height: 25,
                       ),
                       SizedBox(height: 8),
                       Text(
                         mood,
-                        style: TextStyle(fontSize: 10),
+                        style: TextStyle(fontSize: 12),
                       ),
                     ],
                   ),
@@ -86,28 +86,7 @@ class MoodModal extends StatelessWidget {
     );
   }
 
-  String _getMoodSvg(String mood) {
-    switch (mood) {
-      case 'Normal':
-        return 'assets/svgs/neutral.svg';
-      case 'Feliz':
-        return 'assets/svgs/happy.svg';
-      case 'Triste':
-        return 'assets/svgs/sad.svg';
-      case 'Enojado':
-        return 'assets/svgs/angry.svg';
-      case 'Confundido':
-        return 'assets/svgs/confused.svg';
-      case 'Sorprendido':
-        return 'assets/svgs/surprised.svg';
-      case 'Cansado':
-        return 'assets/svgs/tired.svg';
-      case 'x':
-        return 'assets/svgs/predetermined.svg';
-      default:
-        return 'assets/svgs/predetermined.svg';
-    }
-  }
 
-  List<String> get _moodOptions => ['Normal', 'Feliz', 'Triste', 'Enojado', 'Sorprendido', 'Confundido', 'Cansado', 'x'];
+
+  List<String> get _moodOptions => ['Normal', 'Feliz', 'Triste', 'Enojado', 'Sorprendido', 'Confundido', 'Cansado'];
 }
