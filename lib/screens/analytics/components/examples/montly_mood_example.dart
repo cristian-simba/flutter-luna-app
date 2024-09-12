@@ -6,20 +6,27 @@ import 'package:luna/utils/mood_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:luna/providers/icon_color_provider.dart';
 
-class MonthlyMood extends StatefulWidget {
-  final Map<String, int> moodCounts;
-
-  const MonthlyMood({Key? key, required this.moodCounts}) : super(key: key);
+class MonthlyMoodExample extends StatefulWidget {
+  const MonthlyMoodExample({Key? key}) : super(key: key);
 
   @override
-  _MonthlyMoodState createState() => _MonthlyMoodState();
+  _MonthlyMoodExampleState createState() => _MonthlyMoodExampleState();
 }
 
-class _MonthlyMoodState extends State<MonthlyMood> with SingleTickerProviderStateMixin {
+class _MonthlyMoodExampleState extends State<MonthlyMoodExample> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
-  late List<MapEntry<String, int>> _top5Moods;
+  late List<MapEntry<String, int>> _exampleMoods;
   late int _total;
+
+  // Datos de ejemplo
+  final Map<String, int> _exampleMoodCounts = {
+    'Feliz': 8,
+    'Triste': 6,
+    'Enojado': 5,
+    'Sorprendido': 2,
+    'Cansado': 1,
+  };
 
   @override
   void initState() {
@@ -38,10 +45,8 @@ class _MonthlyMoodState extends State<MonthlyMood> with SingleTickerProviderStat
   }
 
   void _processMoodData() {
-    final sortedMoods = widget.moodCounts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    _top5Moods = sortedMoods.take(5).toList();
-    _total = _top5Moods.fold(0, (sum, entry) => sum + entry.value);
+    _exampleMoods = _exampleMoodCounts.entries.toList();
+    _total = _exampleMoods.fold(0, (sum, entry) => sum + entry.value);
   }
 
   @override
@@ -62,22 +67,22 @@ class _MonthlyMoodState extends State<MonthlyMood> with SingleTickerProviderStat
   }
 
   Widget _buildCard(ThemeData theme, IconColorProvider iconColorProvider) {
+    
+    final cardColor = theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard;
+
     return Opacity(
       opacity: _animation.value,
       child: Card(
         elevation: 0,
-        color: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
+        color: cardColor,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 5),
-              const Text(
-                'Tus principales emociones del mes',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 10),
+              _buildChartTitle(),
+              const SizedBox(height: 15),
               _buildPieChart(iconColorProvider),
               const SizedBox(height: 15),
               _buildLegend(iconColorProvider),
@@ -88,25 +93,39 @@ class _MonthlyMoodState extends State<MonthlyMood> with SingleTickerProviderStat
     );
   }
 
+  Widget _buildChartTitle() {
+    final theme = Theme.of(context);
+    return Text(
+      'No hay datos disponibles',
+      style: TextStyle(
+        fontSize: 14,
+        color: theme.brightness == Brightness.dark ? Colors.grey : Colors.grey[700],
+      ),
+    );
+  }
+
   Widget _buildPieChart(IconColorProvider iconColorProvider) {
     return SizedBox(
       height: 150,
       width: double.infinity,
+      child: Opacity(
+      opacity: 0.3, 
       child: PieChart(
         PieChartData(
           borderData: FlBorderData(show: false),
           sectionsSpace: 0,
           centerSpaceRadius: 0,
           sections: _buildPieChartSections(iconColorProvider),
+          ),
         ),
-      ),
+      )
     );
   }
 
   List<PieChartSectionData> _buildPieChartSections(IconColorProvider iconColorProvider) {
-    return List.generate(_top5Moods.length, (index) {
-      final mood = _top5Moods[index];
-      final color = iconColorProvider.getMoodColor(mood.key);
+    return List.generate(_exampleMoods.length, (index) {
+      final mood = _exampleMoods[index];
+      final color = iconColorProvider.getMoodColor(mood.key).withOpacity(0.6);
       return PieChartSectionData(
         color: color,
         value: (mood.value / _total) * 100 * _animation.value,
@@ -130,8 +149,8 @@ class _MonthlyMoodState extends State<MonthlyMood> with SingleTickerProviderStat
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(end - start, (index) {
         final dataIndex = start + index;
-        if (dataIndex >= _top5Moods.length) return Container();
-        final mood = _top5Moods[dataIndex];
+        if (dataIndex >= _exampleMoods.length) return Container();
+        final mood = _exampleMoods[dataIndex];
         final percentage = (mood.value / _total) * 100;
         return _buildLegendItem(mood.key, percentage, iconColorProvider);
       }),
@@ -142,7 +161,7 @@ class _MonthlyMoodState extends State<MonthlyMood> with SingleTickerProviderStat
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
       child: Opacity(
-        opacity: _animation.value,
+        opacity: 0.5,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -150,7 +169,7 @@ class _MonthlyMoodState extends State<MonthlyMood> with SingleTickerProviderStat
               width: 15,
               height: 15,
               decoration: BoxDecoration(
-                color: iconColorProvider.getMoodColor(mood),
+                color: iconColorProvider.getMoodColor(mood).withOpacity(0.6),
                 borderRadius: const BorderRadius.all(Radius.circular(3)),
               ),
             ),

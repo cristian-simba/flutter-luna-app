@@ -86,11 +86,12 @@ class DiaryDatabaseHelper {
       whereArgs: [id],
     );
   }
+
   Future<Map<String, int>> getWeeklyMoodCounts() async {
     final db = await database;
     final now = DateTime.now();
-    final weekStart = now.subtract(Duration(days: now.weekday - 1));
-    final weekEnd = weekStart.add(Duration(days: 7));
+    final weekStart = now.subtract(Duration(days: 7));
+    final weekEnd = now; // Hasta ahora
 
     final result = await db.rawQuery('''
       SELECT mood, COUNT(*) as count
@@ -103,7 +104,7 @@ class DiaryDatabaseHelper {
 
     return Map.fromEntries(result.map((e) => MapEntry(e['mood'] as String, e['count'] as int)));
   }
-  
+
   Future<Map<String, int>> getMonthlyMoodCounts() async {
     final db = await database;
     final now = DateTime.now();
@@ -133,18 +134,21 @@ class DiaryDatabaseHelper {
       GROUP BY mood
     ''', [yearStart.toIso8601String(), yearEnd.toIso8601String()]);
 
-    // Crear un mapa con valores predeterminados para todas las emociones posibles
-    final moods = ['Feliz', 'Triste', 'Enojado', 'Neutral', 'Sorprendido', 'Aburrido'];
+    final moods = ['Feliz', 'Triste', 'Enojado', 'Sorprendido', 'x', 'Cansado', 'Normal'];
     final moodCounts = {for (var mood in moods) mood: 0};
 
-    // Actualizar el mapa con los resultados de la consulta
     for (var row in result) {
       final mood = row['mood'] as String;
       final count = row['count'] as int;
       moodCounts[mood] = count;
     }
 
-    return moodCounts;
+    // Ordenar los resultados de mayor a menor
+    final sortedMoodCounts = Map.fromEntries(
+      moodCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value))
+    );
+
+    return sortedMoodCounts;
   }
 
 }

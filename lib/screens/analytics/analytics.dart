@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:luna/screens/analytics/components/weekly_mood.dart';
 import 'package:luna/screens/analytics/components/montly_mood.dart';
-import 'package:luna/screens/analytics/components/anual_mood.dart';
+import 'package:luna/screens/analytics/components/annual_mood.dart';
+import 'package:luna/screens/analytics/components/examples/weekly_mood_example.dart';
+import 'package:luna/screens/analytics/components/examples/montly_mood_example.dart';
+import 'package:luna/screens/analytics/components/examples/annual_mood_example.dart';
 import 'package:luna/services/database.dart';
 import 'package:luna/constants/colors.dart';
 import 'package:luna/providers/icon_color_provider.dart';
@@ -62,7 +65,7 @@ class _AnalyticsState extends State<Analytics> {
                                   } else if (snapshot.hasError) {
                                     return Center(child: Text('Error: ${snapshot.error}'));
                                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                    return Center(child: Text('No hay datos semanales disponibles'));
+                                    return WeeklyMoodExample();
                                   } else {
                                     return WeeklyMood(moodCounts: snapshot.data!);
                                   }
@@ -76,9 +79,9 @@ class _AnalyticsState extends State<Analytics> {
                                   } else if (snapshot.hasError) {
                                     return Center(child: Text('Error: ${snapshot.error}'));
                                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                    return Center(child: Text('No hay datos mensuales disponibles'));
+                                    return MonthlyMoodExample();
                                   } else {
-                                    return MonthlyMoodPieChart(moodCounts: snapshot.data!);
+                                    return MonthlyMood(moodCounts: snapshot.data!);
                                   }
                                 },
                               ),
@@ -93,14 +96,14 @@ class _AnalyticsState extends State<Analytics> {
                         child: Column(
                           children: [
                             FutureBuilder<Map<String, int>>(
-                              future: DiaryDatabaseHelper.instance.getAnnualMoodCounts(), // Asegúrate de que este método esté implementado
+                              future: DiaryDatabaseHelper.instance.getAnnualMoodCounts(), 
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState == ConnectionState.waiting) {
                                   return Center(child: CircularProgressIndicator());
                                 } else if (snapshot.hasError) {
                                   return Center(child: Text('Error: ${snapshot.error}'));
-                                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                  return Center(child: Text('No hay datos anuales disponibles'));
+                                } else if (!snapshot.hasData || _isDataEmpty(snapshot.data!)) {
+                                  return AnnualMoodExample();
                                 } else {
                                   return AnnualMood(moodCounts: snapshot.data!);
                                 }
@@ -108,7 +111,7 @@ class _AnalyticsState extends State<Analytics> {
                             ),
                           ],
                         ),
-                      ),
+                        ),
                       ),
                     ],
                   ),
@@ -119,5 +122,8 @@ class _AnalyticsState extends State<Analytics> {
         ),
       ),
     );
+  }
+  bool _isDataEmpty(Map<String, int> data) {
+    return data.values.every((count) => count == 0);
   }
 }
