@@ -78,6 +78,9 @@ flutter:
   assets:
     - assets/images/preset_background_1.jpg
     - assets/images/preset_background_2.jpg
+
+    - assets/svgs/lt_pencil.svg
+    
     - assets/svgs/happy.svg
     - assets/svgs/sad.svg
     - assets/svgs/angry.svg

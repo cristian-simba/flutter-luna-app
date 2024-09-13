@@ -51,13 +51,14 @@ class CalendaryState extends State<Calendary> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final backgroundColor = theme.brightness == Brightness.dark 
+              ? ScreenBackground.darkBackground 
+              : ScreenBackground.lightBackground;
+              
     return Scaffold(
       body: SafeArea(
         child: Container(
-          color: theme.brightness == Brightness.dark
-              ? ScreenBackground.darkBackground
-              : ScreenBackground.lightBackground,
+          color: backgroundColor,
           child: SizedBox.expand(
             child: ValueListenableBuilder<Map<DateTime, String?>>(
               valueListenable: _eventMoods,
@@ -70,11 +71,14 @@ class CalendaryState extends State<Calendary> {
                         padding: EdgeInsets.symmetric(vertical: 17),
                         child: Text("Seguimiento de ánimo", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),),
                       ),
-                       CalendarBody(
-                        selectedDay: _selectedDay,
-                        focusedDay: _focusedDay,
-                        eventMoods: eventMoods,
-                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 5),
+                        child: CalendarBody(
+                          selectedDay: _selectedDay,
+                          focusedDay: _focusedDay,
+                          eventMoods: eventMoods,
+                        ),
+                      )
                     ],
                   )
                 );

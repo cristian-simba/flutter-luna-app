@@ -9,7 +9,9 @@ class ProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final iconColor = Provider.of<IconColorProvider>(context).iconColor;
+    final bannerColor = theme.brightness == Brightness.dark ? iconColor.withOpacity(0.8) : iconColor.withOpacity(1);
 
     return FutureBuilder<int>(
       future: DiaryDatabaseHelper.instance.getDiaryCount(),
@@ -19,7 +21,7 @@ class ProgressCard extends StatelessWidget {
 
         return Card(
           elevation: 0.25,
-          color: iconColor,
+          color: bannerColor,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
             child: Column(

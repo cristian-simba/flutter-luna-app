@@ -3,6 +3,8 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:luna/screens/calendary/components/day_cell.dart';
 import 'package:intl/intl.dart';
 import 'package:luna/constants/colors.dart';
+import 'package:provider/provider.dart';
+import 'package:luna/providers/icon_color_provider.dart';
 
 class CalendarBody extends StatelessWidget {
   final ValueNotifier<DateTime?> selectedDay;
@@ -19,16 +21,22 @@ class CalendarBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final iconColor = Provider.of<IconColorProvider>(context).iconColor;
+    final cardColor = theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard;
+    final bannerColor = theme.brightness == Brightness.dark ? iconColor.withOpacity(0.8) : iconColor.withOpacity(1);
+    final horizontalColor = theme.brightness == Brightness.dark
+                          ? CalendarBodyColors.darkHorizontalLines
+                          : CalendarBodyColors.lightHorizontalLines;
 
     return Wrap(
       children: [
         Container(
           decoration: BoxDecoration(
-            color: theme.brightness == Brightness.dark ? CardColors.darkCard : CardColors.lightCard,
-            borderRadius: BorderRadius.circular(10.0),
+            color: cardColor,
+            borderRadius: BorderRadius.circular(15.0),
           ),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+            padding: EdgeInsets.symmetric(vertical: 2),
             child: TableCalendar(
               locale: "es_ES",
               rowHeight: 65,
@@ -48,15 +56,20 @@ class CalendarBody extends StatelessWidget {
               headerStyle: HeaderStyle(
                 formatButtonVisible: false,
                 titleCentered: true,
-                titleTextStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                titleTextStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16, color: Colors.white),
                 titleTextFormatter: (date, locale) {
                   String formattedMonth = DateFormat.MMMM(locale).format(date);
                   String formattedYear = DateFormat.y(locale).format(date);
                   String formattedDate = '$formattedMonth $formattedYear';
                   return formattedDate.split(' ').map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase()).join(' ');
                 },
-                leftChevronIcon: Icon(Icons.arrow_left, size: 25),
-                rightChevronIcon: Icon(Icons.arrow_right, size: 25),
+                headerPadding: EdgeInsets.all(3),
+                leftChevronIcon: Icon(Icons.arrow_left, size: 25, color: Colors.white),
+                rightChevronIcon: Icon(Icons.arrow_right, size: 25, color: Colors.white),
+                decoration: BoxDecoration(
+                  color: bannerColor,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+                ),
               ),
               daysOfWeekHeight: 50,
               daysOfWeekStyle: DaysOfWeekStyle(
@@ -67,9 +80,7 @@ class CalendarBody extends StatelessWidget {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: theme.brightness == Brightness.dark
-                          ? CalendarBodyColors.darkHorizontalLines
-                          : CalendarBodyColors.lightHorizontalLines,
+                      color: horizontalColor,
                       width: 1.0,
                     ),
                   ),

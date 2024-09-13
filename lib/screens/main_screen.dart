@@ -73,7 +73,7 @@ class _NavbarState extends State<Navbar> {
 
   Widget _buildBottomNavigationBar(ThemeData theme, Color iconColor) {
     return Container(
-      height: 60.0, 
+      height: 55.0, 
       child: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 6.0,

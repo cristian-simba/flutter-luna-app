@@ -14,18 +14,22 @@ class AddDiary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          SlideAndFadeTransition(
-            page: EditDiaryScreen(onEntryUpdated: onEntryAdded),
-          ),
-        );
-      },
-      child: Icon(Icons.add, color: Colors.white),
-      backgroundColor: iconColor,
-      shape: const CircleBorder(), 
+    return SizedBox(
+      width: 50.0, 
+      height: 50.0, 
+      child: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            SlideAndFadeTransition(
+              page: EditDiaryScreen(onEntryUpdated: onEntryAdded),
+            ),
+          );
+        },
+        child: Icon(Icons.add, color: Colors.white),
+        backgroundColor: iconColor,
+        shape: const CircleBorder(),
+      ),
     );
   }
 }

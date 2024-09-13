@@ -26,7 +26,7 @@ class ImagePreview extends StatelessWidget {
             return const SizedBox.shrink();
           }
           return Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: const EdgeInsets.only(right: 5.0, bottom: 10),
             child: Container(
               width: 200,
               height: 200,

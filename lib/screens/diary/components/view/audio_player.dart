@@ -93,7 +93,7 @@ class _YouTubeAudioPlayerState extends State<YouTubeAudioPlayer> {
             onPressed: _togglePlayPause,
             color: _errorMessage != null ? Colors.red : null,
           ),
-        const SizedBox(width: 5),
+        // const SizedBox(width: 5),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
