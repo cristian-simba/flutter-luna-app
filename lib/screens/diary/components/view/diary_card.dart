@@ -43,17 +43,17 @@ class DiaryCard extends StatelessWidget {
 
       return Card(
         elevation: 0.25,
-        margin: const EdgeInsets.only(top: 10, bottom: 3, left: 15, right: 15),
+        margin: const EdgeInsets.only(top:0, bottom: 15),
         color: cardColor,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               dayAndMood(iconColor, context),
-              if (entry.songUrl != null && entry.songUrl!.isNotEmpty)
-                YouTubeAudioPlayer(
-                  youtubeUrl: entry.songUrl!,
-                  songName: entry.songName ?? 'Canción del día',
-                ),
+              // if (entry.songUrl != null && entry.songUrl!.isNotEmpty)
+              //   YouTubeAudioPlayer(
+              //     youtubeUrl: entry.songUrl!,
+              //     songName: entry.songName ?? 'Canción del día',
+              //   ),
               if (entry.songUrl != null && entry.songUrl!.isNotEmpty) ...[
                 audioPlayer(iconColor, context),
               ],              
@@ -80,7 +80,7 @@ class DiaryCard extends StatelessWidget {
 
   Widget audioPlayer(Color iconColor, BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 15.0, left: 18, right: 3, bottom: 10),
+      padding: const EdgeInsets.only(top: 15.0, left: 10, right: 10),
       child: Row(
         children: [
           Icon(Icons.play_circle, size: 18, color: iconColor),
@@ -115,7 +115,7 @@ class DiaryCard extends StatelessWidget {
               color: bannerColor,
               borderRadius: const BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)), 
             ),
-            padding: const EdgeInsets.only(top: 5.0, bottom: 2, left: 20, right: 5), 
+            padding: const EdgeInsets.only(top: 5.0, bottom: 2, left: 20, right: 2), 
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -153,7 +153,7 @@ class DiaryCard extends StatelessWidget {
   SizedBox textEditor(QuillController _controller, ThemeData theme) {
     return SizedBox(
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 3, left: 20, right: 3), 
+        padding: const EdgeInsets.only(top:10, bottom: 3, left: 20, right: 20), 
         child: QuillEditor.basic(
           controller: _controller,
           configurations: QuillEditorConfigurations(

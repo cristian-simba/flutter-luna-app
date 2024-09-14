@@ -21,8 +21,9 @@ class DiaryState extends State<Diary> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final backgroundColor = theme.brightness == Brightness.dark ? Colors.black45 : Colors.white10;
-
+    final backgroundColor = theme.brightness == Brightness.dark 
+              ? ScreenBackground.darkBackground 
+              : ScreenBackground.lightBackground;
     return Stack(
       children: [
         Scaffold(

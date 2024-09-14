@@ -34,11 +34,6 @@ class DiaryDatabaseHelper {
     ''');
   }
 
-  // Future<int> insertEntry(DiaryEntry entry) async {
-  //   final db = await database;
-  //   return await db.insert('diary_entries', entry.toMap());
-  // }
-
   Future<int> insertEntry(DiaryEntry entry) async {
     final db = await database;
     final entryMap = entry.toMap();
@@ -55,7 +50,7 @@ class DiaryDatabaseHelper {
   Future<List<DiaryEntry>> getAllEntries() async {
     final db = await database;
     final maps = await db.query('diary_entries', orderBy: 'date DESC');
-      print('Lo que se debe ver: $maps'); 
+    print('Lo que se debe ver: $maps'); 
     return List.generate(maps.length, (i) => DiaryEntry.fromMap(maps[i])); 
   }
 
@@ -87,6 +82,22 @@ class DiaryDatabaseHelper {
     );
   }
 
+  Future<List<DiaryEntry>> getEntriesForDate(DateTime date) async {
+    final db = await database;
+    final startOfDay = DateTime(date.year, date.month, date.day);
+    final endOfDay = startOfDay.add(Duration(days: 1)).subtract(Duration(microseconds: 1));
+
+    final List<Map<String, dynamic>> maps = await db.query(
+      'diary_entries',
+      where: 'date BETWEEN ? AND ?',
+      whereArgs: [startOfDay.toIso8601String(), endOfDay.toIso8601String()],
+    );
+
+    return List.generate(maps.length, (i) {
+      return DiaryEntry.fromMap(maps[i]);
+    });
+  }
+  
   Future<int> getDiaryCount() async {
     final db = await database;
     return Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM diary_entries')) ?? 0;
@@ -155,5 +166,4 @@ class DiaryDatabaseHelper {
 
     return sortedMoodCounts;
   }
-
 }

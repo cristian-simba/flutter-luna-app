@@ -81,7 +81,7 @@ class DiaryListState extends State<DiaryList> {
   Widget _buildYearHeader(ThemeData theme) {
     return const SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.only(left: 20, top: 15, bottom: 5),
+        padding: EdgeInsets.only(left: 20, top: 15, bottom: 10),
         child: Text(
           "2024",
           style: TextStyle(
@@ -121,10 +121,13 @@ class DiaryListState extends State<DiaryList> {
     } else {
       return SliverList(
         delegate: SliverChildBuilderDelegate(
-          (context, index) => DiaryCard(
-            entry: snapshot.data![index],
-            onDelete: loadEntries,
-            onUpdate: loadEntries,
+          (context, index) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 15),
+            child: DiaryCard(
+              entry: snapshot.data![index],
+              onDelete: loadEntries,
+              onUpdate: loadEntries,
+            ),
           ),
           childCount: snapshot.data!.length,
         ),
