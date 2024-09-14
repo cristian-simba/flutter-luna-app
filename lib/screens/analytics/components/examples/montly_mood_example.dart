@@ -24,8 +24,8 @@ class _MonthlyMoodExampleState extends State<MonthlyMoodExample> with SingleTick
     'Feliz': 8,
     'Triste': 6,
     'Enojado': 5,
-    'Sorprendido': 2,
-    'Cansado': 1,
+    'Normal': 3,
+    'Sorprendido': 1,
   };
 
   @override

@@ -80,7 +80,7 @@ class DiaryCard extends StatelessWidget {
 
   Widget audioPlayer(Color iconColor, BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 15.0, left: 10, right: 10),
+      padding: const EdgeInsets.only(top: 15.0, left: 15, right: 10),
       child: Row(
         children: [
           Icon(Icons.play_circle, size: 18, color: iconColor),
@@ -113,7 +113,7 @@ class DiaryCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               color: bannerColor,
-              borderRadius: const BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)), 
+              borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)), 
             ),
             padding: const EdgeInsets.only(top: 5.0, bottom: 2, left: 20, right: 2), 
             child: Row(

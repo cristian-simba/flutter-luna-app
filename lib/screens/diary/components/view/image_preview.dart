@@ -16,7 +16,7 @@ class ImagePreview extends StatelessWidget {
     }
 
     return SizedBox(
-      height: 200,
+      height: 225,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: imagePaths.length,
@@ -28,8 +28,8 @@ class ImagePreview extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(right: 5.0, bottom: 10),
             child: Container(
-              width: 200,
-              height: 200,
+              width: 225,
+              height: 225,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: theme.brightness == Brightness.dark ? 

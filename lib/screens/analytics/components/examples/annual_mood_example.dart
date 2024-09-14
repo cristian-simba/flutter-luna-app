@@ -17,13 +17,15 @@ class _AnnualMoodExampleState extends State<AnnualMoodExample> with SingleTicker
 
   // Datos de ejemplo predefinidos
   final Map<String, int> exampleMoodCounts = {
-    'Feliz': 120,
-    'Normal': 95,
+    'Normal': 120,
+    'Decepcionado': 75,
     'Cansado': 60,
+    'Feliz': 50,
     'Triste': 40,
-    'Enojado': 30,
+    'Aburrido': 30,
     'Sorprendido': 25,
-    'x': 15,
+    'Enojado': 20,
+    'Enamorado': 12
   };
 
   @override

@@ -82,6 +82,17 @@ class DiaryDatabaseHelper {
     );
   }
 
+    Future<List<DiaryEntry>> getEntries(int offset, int limit) async {
+    final db = await database;
+    final maps = await db.query(
+      'diary_entries',
+      orderBy: 'date DESC',
+      limit: limit,
+      offset: offset,
+    );
+    return List.generate(maps.length, (i) => DiaryEntry.fromMap(maps[i]));
+  }
+
   Future<List<DiaryEntry>> getEntriesForDate(DateTime date) async {
     final db = await database;
     final startOfDay = DateTime(date.year, date.month, date.day);
@@ -150,7 +161,11 @@ class DiaryDatabaseHelper {
       GROUP BY mood
     ''', [yearStart.toIso8601String(), yearEnd.toIso8601String()]);
 
-    final moods = ['Feliz', 'Triste', 'Enojado', 'Sorprendido', 'Cansado', 'Normal', 'Confundido'];
+    final moods = ['Normal', 'Feliz', 'Triste', 
+    'Enojado', 'Aburrido', 'Sorprendido', 
+    'Decepcionado', 'Cansado', 'Enamorado'
+    ];
+    
     final moodCounts = {for (var mood in moods) mood: 0};
 
     for (var row in result) {

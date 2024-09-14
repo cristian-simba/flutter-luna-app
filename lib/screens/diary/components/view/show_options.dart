@@ -7,16 +7,44 @@ Future<bool> showDeleteConfirmationDialog(BuildContext context) async {
   return await showDialog<bool>(
     context: context,
     builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Confirmar eliminación'),
-        content: const Text('¿Estás seguro de que quieres eliminar este diario?'),
+      return AlertDialog(       
+        backgroundColor: Theme.of(context).dialogBackgroundColor,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+        ),
+        title: const Text(
+          'Confirmar eliminación',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
+          ),
+        ),
+        content: const Text(
+          '¿Estás seguro de que quieres eliminar este diario?',
+          style: TextStyle(
+            fontSize: 14,
+          ),
+        ),
+        contentPadding: const EdgeInsets.only(top: 15.0, left: 20, right: 20, bottom: 5),
         actions: <Widget>[
           TextButton(
-            child: const Text('Cancelar'),
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 14,
+              ),
+            ),
             onPressed: () => Navigator.of(context).pop(false),
           ),
           TextButton(
-            child: const Text('Eliminar'),
+            child: const Text(
+              'Eliminar',
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 14,
+              ),
+            ),
             onPressed: () => Navigator.of(context).pop(true),
           ),
         ],

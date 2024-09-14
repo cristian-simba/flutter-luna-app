@@ -117,27 +117,71 @@ class _ProfileState extends State<Profile> {
               const Text('Colores de los iconos'),
               GestureDetector(
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Selecciona un nuevo color'),
-                        content: IconColorSelector(
-                          onColorSelected: (Color color) {
-                            iconColorProvider.updateIconColor(color);
-                            Navigator.of(context).pop(); 
-                          },
-                        ),
-                      );
-                    },
-                  );
+                  showColorSelectorDialog(context, iconColorProvider);
                 },
                 child: Icon(Icons.circle, color: iconColorProvider.iconColor, size: 25),
               ),
             ],
-          )
+          ),
         );
       },
     );
   }
+
+
+  Future<void> showColorSelectorDialog(BuildContext context, IconColorProvider iconColorProvider) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).dialogBackgroundColor,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(25)),
+          ),
+          title: const Text(
+            'Selecciona un nuevo color',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
+          ),
+          contentPadding: EdgeInsets.zero,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 15.0, bottom: 0),
+                child: IconColorSelector(
+                  onColorSelected: (Color color) {
+                    iconColorProvider.updateIconColor(color);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10, right: 20),
+                    child:                   TextButton(
+                    child: const Text(
+                      'Cancelar',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                      ),
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  )
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
 }

@@ -5,6 +5,7 @@ import 'package:luna/screens/diary/components/buttons/date_button.dart';
 import 'package:luna/screens/diary/components/buttons/song_of_the_day.dart';
 import 'package:luna/screens/diary/components/buttons/mood_modal.dart'; 
 import 'package:luna/utils/mood_utils.dart';
+import 'package:luna/utils/show_top_messages.dart';
 import 'package:luna/models/diary_entry.dart';
 import 'package:luna/services/database.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -99,9 +100,7 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
     final content = jsonEncode(delta.toJson());
 
     if (content.trim().isEmpty || content == jsonEncode([{"insert":"\n"}])) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('El contenido no puede estar vacío')),
-      );
+      showTopMessage(context, 'El contenido no puede estar vacío');
       return;
     }
 
@@ -121,21 +120,15 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
     try {
       if (widget.entry != null) {
         await DiaryDatabaseHelper.instance.updateEntry(entry);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Diario actualizado')),
-        );
+          showTopMessage(context, ' Diario actualizado');
       } else {
         await DiaryDatabaseHelper.instance.insertEntry(entry);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Diario guardado')),
-        );
+        showTopMessage(context, 'Diario guardado');
       }
       widget.onEntryUpdated();
       Navigator.of(context).pop();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al guardar el diario: $e')),
-      );
+        showTopMessage(context, ' Error al guardar el diario: $e');
     }
   }
 

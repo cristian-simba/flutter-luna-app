@@ -10,7 +10,6 @@ class MoodModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -21,72 +20,60 @@ class MoodModal extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Selecciona tu estado de ánimo',
+              '¿Cómo te sientes en este día?',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             ),
             SizedBox(height: 20),
-            // Fila superior
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: _moodOptions.sublist(0, 4).map((mood) => Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    onMoodSelected(mood);
-                    Navigator.of(context).pop();
-                  },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SvgPicture.asset(
-                        getMoodSvg(mood),
-                        width: 25,
-                        height: 25,
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        mood,
-                        style: TextStyle(fontSize: 12),
-                      ),
-                    ],
-                  ),
-                ),
-              )).toList(),
-            ),
-            SizedBox(height: 20),
-            // Fila inferior
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: _moodOptions.sublist(4).map((mood) => Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    onMoodSelected(mood);
-                    Navigator.of(context).pop();
-                  },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SvgPicture.asset(
-                        getMoodSvg(mood),
-                        width: 25,
-                        height: 25,
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        mood,
-                        style: TextStyle(fontSize: 12),
-                      ),
-                    ],
-                  ),
-                ),
-              )).toList(),
-            ),
+            ..._buildMoodGrid(context),
           ],
         ),
       ),
     );
   }
 
+  List<Widget> _buildMoodGrid(BuildContext context) {
+    final List<Widget> rows = [];
+    for (int i = 0; i < _moodOptions.length; i += 3) {
+      final rowMoods = _moodOptions.sublist(i, i + 3 > _moodOptions.length ? _moodOptions.length : i + 3);
+      rows.add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: rowMoods.map((mood) => Expanded(
+            child: GestureDetector(
+              onTap: () {
+                onMoodSelected(mood);
+                Navigator.of(context).pop();
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    getMoodSvg(mood),
+                    width: 25,
+                    height: 30,
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    mood,
+                    style: TextStyle(fontSize: 12),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          )).toList(),
+        ),
+      );
+      if (i + 3 < _moodOptions.length) {
+        rows.add(SizedBox(height: 20));
+      }
+    }
+    return rows;
+  }
 
-
-  List<String> get _moodOptions => ['Normal', 'Feliz', 'Triste', 'Enojado', 'Sorprendido', 'Confundido', 'Cansado'];
+  List<String> get _moodOptions => [
+    'Normal', 'Feliz', 'Triste', 
+    'Enojado', 'Aburrido', 'Sorprendido', 
+    'Decepcionado', 'Cansado', 'Enamorado'
+  ];
 }

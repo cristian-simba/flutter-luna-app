@@ -14,42 +14,75 @@ class DiaryList extends StatefulWidget {
 }
 
 class DiaryListState extends State<DiaryList> {
-  Future<List<DiaryEntry>>? _entriesFuture;
+  final List<DiaryEntry> _entries = [];
+  bool _isLoading = false;
+  bool _hasMore = true;
+  final int _pageSize = 10;
+  final ScrollController _scrollController = ScrollController();
   final BackgroundImageService _backgroundImageService = BackgroundImageService();
 
   @override
   void initState() {
     super.initState();
-    loadEntries();
+    _loadMore();
     _backgroundImageService.loadBackgroundImage();
+    _scrollController.addListener(_scrollListener);
   }
 
-  void loadEntries() {
+  void _scrollListener() {
+    if (_scrollController.offset >= _scrollController.position.maxScrollExtent * 0.9 && !_isLoading) {
+      _loadMore();
+    }
+  }
+
+  Future<void> _loadMore() async {
+    if (_isLoading || !_hasMore) return;
     setState(() {
-      _entriesFuture = DiaryDatabaseHelper.instance.getAllEntries();
+      _isLoading = true;
     });
+
+    try {
+      // await Future.delayed(Duration(seconds: 2));
+
+      final newEntries = await DiaryDatabaseHelper.instance.getEntries(_entries.length, _pageSize);
+      setState(() {
+        _entries.addAll(newEntries);
+        _isLoading = false;
+        _hasMore = newEntries.length == _pageSize;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      // Manejo de errores
+    }
+  }
+
+  void _reloadEntries() {
+    setState(() {
+      _entries.clear();
+      _hasMore = true;
+    });
+    _loadMore();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return FutureBuilder<List<DiaryEntry>>(
-        future: _entriesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            return CustomScrollView(
-              slivers: [
-                _buildSliverAppBar(theme),
-                _buildYearHeader(theme),
-                _buildEntriesList(snapshot, theme),
-              ],
-            );
-          }
-        },
+    return CustomScrollView(
+      controller: _scrollController,
+      slivers: [
+        _buildSliverAppBar(theme),
+        _buildYearHeader(theme),
+        _buildEntriesList(theme),
+        if (_isLoading)
+          const SliverToBoxAdapter(
+            child: Center(child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: CircularProgressIndicator(),
+            )),
+          ),
+      ],
     );
   }
 
@@ -93,30 +126,30 @@ class DiaryListState extends State<DiaryList> {
     );
   }
 
-  Widget _buildEntriesList(AsyncSnapshot<List<DiaryEntry>> snapshot, ThemeData theme) {
+  Widget _buildEntriesList(ThemeData theme) {
     final textColor = theme.brightness == Brightness.dark ? Colors.grey[300] : Colors.grey[600];
-    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+    if (_entries.isEmpty && !_isLoading) {
       return SliverFillRemaining(
         child: Opacity(
           opacity: 0.6,
           child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                'assets/svgs/predetermined.svg',
-                height: 60,
-                width: 60,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Empieza a escribir tu historia',
-                style: TextStyle(color: textColor, fontWeight: FontWeight.w700, fontSize: 14 ),
-              ),
-            ],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/svgs/predetermined.svg',
+                  height: 60,
+                  width: 60,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Empieza a escribir tu historia',
+                  style: TextStyle(color: textColor, fontWeight: FontWeight.w700, fontSize: 14),
+                ),
+              ],
+            ),
           ),
         ),
-        )
       );
     } else {
       return SliverList(
@@ -124,14 +157,21 @@ class DiaryListState extends State<DiaryList> {
           (context, index) => Padding(
             padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 15),
             child: DiaryCard(
-              entry: snapshot.data![index],
-              onDelete: loadEntries,
-              onUpdate: loadEntries,
+              entry: _entries[index],
+              onDelete: _reloadEntries,
+              onUpdate: _reloadEntries,
             ),
           ),
-          childCount: snapshot.data!.length,
+          childCount: _entries.length,
         ),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
   }
 }

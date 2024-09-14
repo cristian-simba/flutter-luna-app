@@ -83,11 +83,14 @@ flutter:
     - assets/svgs/happy.svg
     - assets/svgs/sad.svg
     - assets/svgs/angry.svg
-    - assets/svgs/confused.svg
+    - assets/svgs/upset.svg
     - assets/svgs/neutral.svg
     - assets/svgs/predetermined.svg
     - assets/svgs/surprised.svg
     - assets/svgs/tired.svg
+    # Nuevos
+    - assets/svgs/bored.svg
+    - assets/svgs/love.svg
 
     - assets/svgs/book.svg
     - assets/svgs/galery.svg

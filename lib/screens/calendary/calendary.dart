@@ -20,7 +20,7 @@ class CalendaryState extends State<Calendary> {
   late final ValueNotifier<DateTime?> _focusedDay;
   late final ValueNotifier<Map<DateTime, String?>> _eventMoods;
   late final ValueNotifier<List<DiaryEntry>> _selectedDayEntries;
-  Future<List<DiaryEntry>>? _entriesFuture;
+  late Future<void> _initializationFuture;
 
   @override
   void initState() {
@@ -29,10 +29,12 @@ class CalendaryState extends State<Calendary> {
     _focusedDay = ValueNotifier<DateTime?>(DateTime.now());
     _eventMoods = ValueNotifier<Map<DateTime, String?>>({});
     _selectedDayEntries = ValueNotifier<List<DiaryEntry>>([]);
-    loadEntries();
+    _initializationFuture = _initializeData();
+  }
 
-    _loadEventMoods();
-    _loadSelectedDayEntries(_selectedDay.value!);
+  Future<void> _initializeData() async {
+    await _loadEventMoods();
+    await _loadSelectedDayEntries(_selectedDay.value!);
   }
 
   Future<void> _loadEventMoods() async {
@@ -42,9 +44,7 @@ class CalendaryState extends State<Calendary> {
       final date = entry.date;
       newEventMoods[DateTime(date.year, date.month, date.day)] = entry.mood;
     }
-    setState(() {
-      _eventMoods.value = newEventMoods;
-    });
+    _eventMoods.value = newEventMoods;
   }
 
   Future<void> _loadSelectedDayEntries(DateTime day) async {
@@ -52,15 +52,9 @@ class CalendaryState extends State<Calendary> {
     _selectedDayEntries.value = entries;
   }
 
-  void loadEntries() {
-    setState(() {
-      _entriesFuture = DiaryDatabaseHelper.instance.getAllEntries();
-    });
-  }
-
   void refreshCalendar() {
-    _loadEventMoods();
-    _loadSelectedDayEntries(_selectedDay.value!);
+    _initializationFuture = _initializeData();
+    setState(() {});
   }
 
   @override
@@ -83,44 +77,53 @@ class CalendaryState extends State<Calendary> {
       body: Container(
         color: backgroundColor,
         child: SafeArea(
-          child: Column(
-            children: [
-              _buildTopTitle(), 
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Column(
-                      children: [
-                        _buildCalendar(),
-                        const SizedBox(height: 5),
-                        ValueListenableBuilder<List<DiaryEntry>>(
-                          valueListenable: _selectedDayEntries,
-                          builder: (context, entries, _) {
-                            if (entries.isEmpty) {
-                              return _buildEmptyDiary(iconColor);
-                            } else {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _buildTitleFound(),
-                                  _buildDiaryCard(entries),
-                                ],
-                              );
-                            }
-                          },
+          child: FutureBuilder<void>(
+            future: _initializationFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+              return Column(
+                children: [
+                  _buildTopTitle(), 
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Column(
+                          children: [
+                            _buildCalendar(),
+                            const SizedBox(height: 5),
+                            ValueListenableBuilder<List<DiaryEntry>>(
+                              valueListenable: _selectedDayEntries,
+                              builder: (context, entries, _) {
+                                if (entries.isEmpty) {
+                                  return _buildEmptyDiary(iconColor);
+                                } else {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      _buildTitleFound(),
+                                      _buildDiaryCard(entries),
+                                    ],
+                                  );
+                                }
+                              },
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ],
+                ],
+              );
+            },
           ),
         ),
       ),
     );
   }
+
 
   Padding _buildTitleFound() {
     return const Padding(
@@ -202,11 +205,9 @@ class CalendaryState extends State<Calendary> {
         return DiaryCard(
           entry: entry,
           onDelete: () {
-            loadEntries();
             refreshCalendar();
           },
           onUpdate: () {
-            loadEntries();
             refreshCalendar();
           },
         );
