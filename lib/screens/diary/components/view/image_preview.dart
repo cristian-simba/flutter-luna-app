@@ -16,7 +16,7 @@ class ImagePreview extends StatelessWidget {
     }
 
     return SizedBox(
-      height: 225,
+      height: 200,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: imagePaths.length,
@@ -29,7 +29,6 @@ class ImagePreview extends StatelessWidget {
             padding: const EdgeInsets.only(right: 5.0, bottom: 10),
             child: Container(
               width: 225,
-              height: 225,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: theme.brightness == Brightness.dark ? 
@@ -43,8 +42,8 @@ class ImagePreview extends StatelessWidget {
                 // borderRadius: BorderRadius.circular(8.0),
                 child: Image.file(
                   file,
-                  width: 250,
-                  height: 250,
+                  width: 200,
+                  height: 200,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(

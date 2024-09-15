@@ -42,7 +42,7 @@ class DiaryCard extends StatelessWidget {
       );
 
       return Card(
-        elevation: 0.25,
+        elevation: 1,
         margin: const EdgeInsets.only(top:0, bottom: 15),
         color: cardColor,
           child: Column(
