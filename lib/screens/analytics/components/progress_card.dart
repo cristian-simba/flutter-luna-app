@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:luna/providers/icon_color_provider.dart';
 import 'package:luna/services/database.dart';
+import 'dart:math'; // Importa la biblioteca dart:math
 
 class ProgressCard extends StatelessWidget {
   const ProgressCard({Key? key}) : super(key: key);
@@ -16,8 +17,9 @@ class ProgressCard extends StatelessWidget {
     return FutureBuilder<int>(
       future: DiaryDatabaseHelper.instance.getDiaryCount(),
       builder: (context, snapshot) {
-        final diaryCount = snapshot.data ?? 0;
-        final progress = diaryCount / 5;
+        int diaryCount = snapshot.data ?? 0;
+        diaryCount = min(diaryCount, 7); // Limita diaryCount a un máximo de 7
+        final progress = diaryCount / 7;
 
         return Card(
           elevation: 0.25,
@@ -42,7 +44,7 @@ class ProgressCard extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '$diaryCount de 5 diarios para ver gráficas',
+                            '$diaryCount de 7 diarios para ver gráficas',
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.white,

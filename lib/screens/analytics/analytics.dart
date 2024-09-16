@@ -29,7 +29,7 @@ class Analytics extends StatelessWidget {
         }
 
         final diaryCount = snapshot.data ?? 0;
-        final showRealGraphs = diaryCount >= 5;
+        final showRealGraphs = diaryCount >= 7;
 
         return DefaultTabController(
           length: 2,

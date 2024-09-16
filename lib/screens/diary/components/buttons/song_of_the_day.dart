@@ -160,9 +160,9 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
       onTap: _songUrl.isNotEmpty ? _launchURL : _showSongDialog,
       child: Padding(
         padding: _songName.isNotEmpty && _songUrl.isNotEmpty
-            ? EdgeInsets.symmetric(horizontal: 15, vertical: 0)
+            ? EdgeInsets.only(left: 15, right: 8.5)
             : EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-        child: Row(
+        child: Row(  
           children: [
             Icon(
               Icons.play_circle,
@@ -207,6 +207,5 @@ class _SongOfTheDayState extends State<SongOfTheDay> {
       ),
     );
   }
-
 }
 

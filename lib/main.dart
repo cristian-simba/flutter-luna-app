@@ -3,9 +3,16 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:luna/screens/main_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:luna/providers/icon_color_provider.dart';  
+import 'package:luna/providers/icon_color_provider.dart';
+import 'package:luna/services/notification_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.initializeNotification();
+  
+  // Programar la notificación diaria
+  NotificationService.scheduleNotification();
+  
   runApp(
     ChangeNotifierProvider(
       create: (context) => IconColorProvider(),
@@ -16,6 +23,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +45,7 @@ class MyApp extends StatelessWidget {
           theme: theme,
           darkTheme: darkTheme,
           home: Navbar(),
+          navigatorKey: navigatorKey,
           supportedLocales: const [
             Locale('en', ''), // Inglés
             Locale('es', ''), // Español
