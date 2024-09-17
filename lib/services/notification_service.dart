@@ -6,7 +6,7 @@ import 'package:luna/screens/main_screen.dart';
 class NotificationService {
   static Future<void> initializeNotification() async {
     await AwesomeNotifications().initialize(
-      'resource://drawable/icon', // Aquí especificas el ícono
+      'resource://drawable/icon',
       [
         NotificationChannel(
           channelGroupKey: 'high_importance_channel',
@@ -102,7 +102,7 @@ class NotificationService {
         category: category,
         payload: payload,
         bigPicture: bigPicture,
-        icon: 'resource://drawable/icon', // Especifica el ícono aquí
+        icon: 'resource://drawable/icon',
       ),
       actionButtons: actionButtons,
       schedule: scheduled
@@ -118,7 +118,7 @@ class NotificationService {
 
   static void scheduleNotification() {
     final now = DateTime.now();
-    var scheduledTime = DateTime(now.year, now.month, now.day, 15, 50); 
+    var scheduledTime = DateTime(now.year, now.month, now.day, 09, 25); 
     
     if (scheduledTime.isBefore(now)) {
       scheduledTime = scheduledTime.add(Duration(days: 1));

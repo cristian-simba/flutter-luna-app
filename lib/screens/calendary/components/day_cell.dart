@@ -19,8 +19,8 @@ class DayCell extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final circleColor = theme.brightness == Brightness.dark ? CalendaryCell.darkCircle : CalendaryCell.lightCircle;
-    final borderColor = theme.brightness == Brightness.dark ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.2);
-    final shadowColor = theme.brightness == Brightness.dark ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.2);
+    final borderColor = theme.brightness == Brightness.dark ? Colors.white.withOpacity(0.5) : Colors.grey.withOpacity(0.3);
+    final shadowColor = theme.brightness == Brightness.dark ? Colors.white.withOpacity(0.5) : Colors.grey.withOpacity(0.2);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

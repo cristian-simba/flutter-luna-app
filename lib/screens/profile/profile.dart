@@ -3,10 +3,11 @@ import 'package:luna/widgets/theme_switcher.dart';
 import 'package:provider/provider.dart';
 import 'package:luna/providers/icon_color_provider.dart';
 import 'package:luna/widgets/icon_color_selector.dart';
+import 'package:luna/widgets/notification_toggle.dart';
 import 'package:luna/services/database.dart';
 import 'package:luna/constants/colors.dart';
 import 'package:luna/screens/profile/components/count_cards.dart';  
-
+import 'package:luna/screens/profile/components/about.dart';
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -63,18 +64,28 @@ class _ProfileState extends State<Profile> {
                   color: cardColor,
                   elevation: 0.25,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    padding: EdgeInsets.only(left: 13, top: 5, bottom: 5, right: 20),
+                    child: colorSelector(),  
+                  )
+                ),
+                const SizedBox(height: 4),
+                Card(
+                  color: cardColor,
+                  elevation: 0.25,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                     child: Column(
                       children: [
+                        NotificationToggle(),
+                        Divider(height: 1, color: separatorColor,),
                         ThemeSwitcher(),
                         Divider(height: 1, color: separatorColor,),
-                        colorSelector()
+                        _buildAboutBtn(context),                      
                       ],
                     )
                   )
                 ),
-                const SizedBox(height: 20),
-                
+                const SizedBox(height: 20),                
               ],
             ),
           ),
@@ -82,6 +93,37 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
+
+  TextButton _buildAboutBtn(BuildContext context) {
+    final theme = Theme.of(context);
+    final textColor = theme.brightness == Brightness.dark ? Colors.white : Colors.black;
+
+    return TextButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => About()),
+        );
+      },
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.zero, 
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 3, right: 10), 
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Acerca de',
+              style: TextStyle(color: textColor, fontWeight: FontWeight.normal),
+            ),
+            Icon(Icons.arrow_forward_ios, color: textColor, size: 12,),
+          ],
+        ),
+      ),
+    );
+  }
+
 
   Padding topTitle() {
     return const Padding(
@@ -114,7 +156,7 @@ class _ProfileState extends State<Profile> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Colores de los iconos'),
+              const Text('Colores de la aplicación'),
               GestureDetector(
                 onTap: () {
                   showColorSelectorDialog(context, iconColorProvider);
