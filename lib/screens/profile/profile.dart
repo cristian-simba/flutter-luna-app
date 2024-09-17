@@ -8,6 +8,9 @@ import 'package:luna/services/database.dart';
 import 'package:luna/constants/colors.dart';
 import 'package:luna/screens/profile/components/count_cards.dart';  
 import 'package:luna/screens/profile/components/about.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:luna/utils/show_top_messages.dart';
+
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -80,6 +83,8 @@ class _ProfileState extends State<Profile> {
                         Divider(height: 1, color: separatorColor,),
                         ThemeSwitcher(),
                         Divider(height: 1, color: separatorColor,),
+                        _buildSuportBtn(context), 
+                        Divider(height: 1, color: separatorColor,),
                         _buildAboutBtn(context),                      
                       ],
                     )
@@ -91,6 +96,43 @@ class _ProfileState extends State<Profile> {
           ),
         )
       ),
+    );
+  }
+
+  TextButton _buildSuportBtn(BuildContext context) {
+    final theme = Theme.of(context);
+    final textColor = theme.brightness == Brightness.dark ? Colors.white : Colors.black;
+    return TextButton(
+      onPressed: () async {
+        final Uri emailUri = Uri(
+          scheme: 'mailto',
+          path: 'davidsimba200@gmail.com',
+          queryParameters: {
+            'subject': 'Soporte/Comentarios',
+          },
+        );
+        try {
+          await launchUrl(emailUri);
+        } catch (e) {
+          showTopMessage(context, 'No se puede abrir el correo');
+        }
+      },
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.zero, 
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 3, right: 10), 
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Envia tus comentarios',
+              style: TextStyle(color: textColor, fontWeight: FontWeight.normal),
+            ),
+            Icon(Icons.arrow_forward_ios, color: textColor, size: 12,),
+          ],
+        ),
+      ),    
     );
   }
 
@@ -114,7 +156,7 @@ class _ProfileState extends State<Profile> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Acerca de',
+              'Acerca de la aplicación',
               style: TextStyle(color: textColor, fontWeight: FontWeight.normal),
             ),
             Icon(Icons.arrow_forward_ios, color: textColor, size: 12,),

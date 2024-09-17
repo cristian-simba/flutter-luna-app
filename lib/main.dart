@@ -4,18 +4,19 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:luna/screens/main_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:luna/providers/icon_color_provider.dart';
+import 'package:luna/providers/notification_provider.dart';
 import 'package:luna/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService.initializeNotification();
-  
-  // Programar la notificación diaria
-  NotificationService.scheduleNotification();
-  
+
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => IconColorProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => IconColorProvider()),
+        ChangeNotifierProvider(create: (context) => NotificationProvider()),
+      ],
       child: const MyApp(),
     ),
   );

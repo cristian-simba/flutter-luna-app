@@ -7,6 +7,7 @@ import 'package:luna/screens/diary/components/toolbar/font_options_container.dar
 import 'package:luna/screens/diary/components/toolbar/images_options_container.dart';
 import 'package:luna/screens/diary/components/toolbar/color_options_container.dart'; 
 import 'package:luna/screens/diary/components/toolbar/emoji_picker.dart';
+
 class DiaryEditor extends StatefulWidget {
   final QuillController controller;
   final Function(List<String>) updateImages;
@@ -17,16 +18,13 @@ class DiaryEditor extends StatefulWidget {
     required this.controller,
     required this.imagePaths,
     required this.updateImages,
-  }) : super(key: key) {
-    print("ImagePats $imagePaths");
-  }
+  }) : super(key: key);
 
   @override
   _DiaryEditorState createState() => _DiaryEditorState();
 }
 
 class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin {
-
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimation;
 
@@ -54,13 +52,55 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
     super.dispose();
   }
 
+  Future<bool> _showExitConfirmationDialog() async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+      ),
+        title: const Text('¿Estás seguro?',
+        style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
+          ),
+        ),
+        content: const Text('Si sales, tus cambios no se guardarán.',
+            style: TextStyle(
+            fontSize: 14,
+          ),
+        ),
+        contentPadding: const EdgeInsets.only(top: 15.0, left: 20, right: 20, bottom: 5),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Salir',
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ) ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return ChangeNotifierProvider(
-      create: (_) => DiaryEditorProvider(controller: widget.controller, initialImagePaths: widget.imagePaths,),
-      
+      create: (_) => DiaryEditorProvider(controller: widget.controller, initialImagePaths: widget.imagePaths),
       child: Consumer<DiaryEditorProvider>(
         builder: (context, provider, child) {
           if (provider.isFontSelected || provider.isColorSelected || provider.isEmojiSelected || provider.isImageSelected) {
@@ -69,13 +109,17 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
             _animationController.reverse();
           }
           return PopScope(
-            canPop: !provider.isFontSelected && !provider.isColorSelected && !provider.isEmojiSelected && !provider.isImageSelected,
-            onPopInvoked: (didPop) {
+            canPop: false,
+            onPopInvoked: (didPop) async {
               if (didPop) return;
+              
               if (provider.isFontSelected || provider.isColorSelected || provider.isEmojiSelected || provider.isImageSelected) {
                 provider.closeAllContainers();
               } else {
-                Future.microtask(() => Navigator.of(context).pop());
+                final shouldPop = await _showExitConfirmationDialog();
+                if (shouldPop) {
+                  Navigator.of(context).pop();
+                }
               }
             },
             child: Column(
@@ -136,7 +180,6 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
               if (provider.isColorSelected) const ColorOptionsContainer(),
               if (provider.isImageSelected)
                 ImageOptionsContainer(
-
                   updateImages: (paths) {
                     widget.updateImages(paths);
                     provider.updateImages(paths);
@@ -149,5 +192,4 @@ class _DiaryEditorState extends State<DiaryEditor> with TickerProviderStateMixin
       ),
     );
   }
-
 }

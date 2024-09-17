@@ -13,6 +13,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:luna/screens/diary/components/view/audio_player.dart';
 import 'package:luna/screens/diary/components/view/show_options.dart';
 import 'package:luna/screens/diary/components/view/image_preview.dart';
+import 'package:luna/utils/show_top_messages.dart';
 
 class DiaryCard extends StatelessWidget {
   final DiaryEntry entry;
@@ -147,7 +148,11 @@ class DiaryCard extends StatelessWidget {
 
   Future<void> _launchSongUrl(BuildContext context) async {
     final Uri url = Uri.parse(entry.songUrl!);
-    await launchUrl(url);
+    try {
+      await launchUrl(url);
+    } catch (e) {
+      showTopMessage(context, 'No se puede abrir el enlace');
+    }
   }
 
   SizedBox textEditor(QuillController _controller, ThemeData theme) {
