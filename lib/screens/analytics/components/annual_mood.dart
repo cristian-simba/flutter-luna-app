@@ -65,7 +65,7 @@ class _AnnualMoodState extends State<AnnualMood> with SingleTickerProviderStateM
             elevation: 0,
             color: cardColor,
             child: Padding(
-              padding: const EdgeInsets.only(top: 25.0, bottom: 20.0, left: 10, right: 25),
+              padding: const EdgeInsets.only(top: 20.0, bottom: 20.0, left: 10, right: 25),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -115,7 +115,7 @@ class _AnnualMoodState extends State<AnnualMood> with SingleTickerProviderStateM
   Widget _buildChartTitle() {
     return Center(
       child: Text(
-        'Emociones anuales',
+        'Tus emociones en el año',
         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
       )
     );

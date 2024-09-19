@@ -61,7 +61,7 @@ class DiaryCard extends StatelessWidget {
               textEditor(_controller, theme),
               const SizedBox(height: 10),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: EdgeInsets.only(top: 5, bottom: 20, left: 18, right: 20),
                 child: ImagePreview(imagePaths: entry.imagePaths),
               )
             ],

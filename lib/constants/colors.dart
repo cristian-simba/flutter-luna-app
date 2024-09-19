@@ -12,8 +12,14 @@ class NavbarBackground {
 
 class IconColors {
   static const Color primaryIcon = Color(0xFF7986CB);
-  static const Color secondaryIcon= Color(0xFFFFAB91);
-  static const Color thirdIcon = Color(0xFF607D8B);
+  static const Color secondaryIcon= Color(0xFF607D8B);
+  static const Color thirdIcon = Color(0xFFFF9E80);
+  static const Color fourthIcon = Color(0xFF82B1FF);
+  static const Color fifthIcon = Color(0xFF81C784);
+  // static const Color fifthIcon = Color(0xFF303030);
+  // Quedan
+  // Veremos
+  // static const Color fifthIcon = Color.fromRGBO(126, 87, 194, 1);
 }
 
 class CardColors {

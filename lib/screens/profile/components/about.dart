@@ -20,7 +20,7 @@ class _AboutState extends State<About> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 200,
+              height: 225,
               width: double.infinity,
               decoration: const BoxDecoration(
                 image: DecorationImage(
@@ -69,7 +69,7 @@ class _AboutState extends State<About> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'Si tienes preguntas, sugerencias, o simplemente quieres ponerte en contacto, no dudes en escribirme a david.simba@example.com. Estoy siempre abierto a escuchar tus comentarios y mejorar la app en base a tus necesidades.',
+                      'Si tienes preguntas, sugerencias, o simplemente quieres ponerte en contacto, no dudes en enviar un correo en la parte de comentarios que se encuentra en el apartado de perfil. Estoy siempre abierto a escuchar tus comentarios y mejorar la app en base a tus necesidades.',
                     ),
                     SizedBox(height: 20),
                     Text(

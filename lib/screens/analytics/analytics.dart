@@ -55,7 +55,7 @@ class Analytics extends StatelessWidget {
                       child: _buildMensualView(showRealGraphs),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                       child: SingleChildScrollView(
                         child: _buildAnnualView(showRealGraphs),
                       ),

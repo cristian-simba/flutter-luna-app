@@ -16,7 +16,7 @@ class ImagePreview extends StatelessWidget {
     }
 
     return SizedBox(
-      height: 200,
+      height: 175,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: imagePaths.length,
@@ -26,20 +26,19 @@ class ImagePreview extends StatelessWidget {
             return const SizedBox.shrink();
           }
           return Padding(
-            padding: const EdgeInsets.only(right: 5.0, bottom: 10),
+            padding: const EdgeInsets.only(right: 5.0,),
             child: Container(
-              width: 225,
+              width: 200,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: theme.brightness == Brightness.dark ? 
-                  CardColors.darkImageBorder : CardColors.lightImageBorder, 
-                  width: 12.0
-                ), // Borde gris claro de 2 píxeles
-                // borderRadius: BorderRadius.circular(5.0),
-                color: Colors.white, // Fondo blanco para el borde
+                  color: theme.brightness == Brightness.dark 
+                      ? CardColors.darkImageBorder 
+                      : CardColors.lightImageBorder, 
+                ),
+                borderRadius: BorderRadius.circular(15.0), 
               ),
               child: ClipRRect(
-                // borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(15.0),
                 child: Image.file(
                   file,
                   width: 200,
@@ -47,8 +46,8 @@ class ImagePreview extends StatelessWidget {
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
-                      width: 250,
-                      height: 250,
+                      width: 200,
+                      height: 200,
                       color: Colors.grey[300],
                       child: const Icon(Icons.error, size: 60),
                     );

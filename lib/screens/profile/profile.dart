@@ -212,7 +212,6 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-
   Future<void> showColorSelectorDialog(BuildContext context, IconColorProvider iconColorProvider) async {
     return showDialog<void>(
       context: context,
@@ -230,42 +229,43 @@ class _ProfileState extends State<Profile> {
             ),
           ),
           contentPadding: EdgeInsets.zero,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 15.0, bottom: 0),
-                child: IconColorSelector(
-                  onColorSelected: (Color color) {
-                    iconColorProvider.updateIconColor(color);
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10, right: 20),
-                    child:                   TextButton(
-                    child: const Text(
-                      'Cancelar',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                      ),
-                    ),
-                    onPressed: () => Navigator.of(context).pop(),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10, bottom: 0),
+                  child: IconColorSelector(
+                    onColorSelected: (Color color) {
+                      iconColorProvider.updateIconColor(color);
+                      Navigator.of(context).pop();
+                    },
                   ),
-                  )
-                ],
-              ),
-            ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 10, right: 20),
+                      child: TextButton(
+                        child: const Text(
+                          'Cancelar',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },
     );
   }
-
 }

@@ -4,17 +4,17 @@ import 'package:luna/constants/analytics_colors.dart';
 
 class MoodColorSelector {
   static Color getMoodColor(String mood, Color iconColor) {
-    String palette;
-    if (iconColor == IconColors.primaryIcon) {
-      palette = 'primary';
-    } else if (iconColor == IconColors.secondaryIcon) {
-      palette = 'secondary';
-    } else if (iconColor == IconColors.thirdIcon) {
-      palette = 'third';
-    } else {
-      palette = 'default';
-    }
+    final Map<Color, String> paletteMap = {
+      IconColors.primaryIcon: 'primary',
+      IconColors.secondaryIcon: 'secondary',
+      IconColors.thirdIcon: 'third',
+      IconColors.fourthIcon: 'fourth',
+      IconColors.fifthIcon: 'fifth',
+    };
 
-    return MoodColors.palettes[palette]?[mood] ?? MoodColors.palettes[palette]!['default']!;
+    String palette = paletteMap[iconColor] ?? 'default';
+
+    return MoodColors.palettes[palette]?[mood] ?? 
+           MoodColors.palettes[palette]!['default']!;
   }
 }
