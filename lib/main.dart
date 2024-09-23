@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Nunito'
         ),
       ),
-      initial: AdaptiveThemeMode.light,
+      initial: AdaptiveThemeMode.dark,
       builder: (theme, darkTheme) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,

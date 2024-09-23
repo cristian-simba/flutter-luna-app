@@ -7,6 +7,10 @@ class BackgroundImageService {
   static const List<String> _presetImages = [
     'assets/images/preset_background_1.jpg',
     'assets/images/preset_background_2.jpg',
+    'assets/images/preset_background_3.jpg',
+    'assets/images/preset_background_4.jpg',
+    'assets/images/preset_background_5.jpg',
+    'assets/images/preset_background_6.jpg',
   ];
 
   final ValueNotifier<String?> backgroundImagePathNotifier = ValueNotifier<String?>(null);

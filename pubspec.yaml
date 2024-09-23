@@ -91,6 +91,10 @@ flutter:
     - assets/images/about_img.jpeg
     - assets/images/preset_background_1.jpg
     - assets/images/preset_background_2.jpg
+    - assets/images/preset_background_3.jpg
+    - assets/images/preset_background_4.jpg
+    - assets/images/preset_background_5.jpg
+    - assets/images/preset_background_6.jpg
 
     - assets/svgs/not_found.svg
     - assets/svgs/happy.svg
